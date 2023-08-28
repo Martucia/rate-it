@@ -1,0 +1,47 @@
+@import '@variables'
+
+.banner
+    width: 100%
+    max-width: 90vw
+    display: grid
+    grid-template-columns: 1fr 2fr
+    gap: 8rem
+    margin: 80px auto 0
+    align-items: center
+
+.title
+    font-size: 48px
+    font-weight: 300
+    line-height: 30px
+    span
+        font-weight: 900
+        display: block
+        width: 100%
+
+.subtitle
+    font-size: 16px
+    margin-top: 18px
+    max-width: 280px
+
+.btns
+    display: flex
+    align-items: center
+    gap: 1em
+    justify-content: space-between
+    margin-top: 30px
+
+.btn
+    padding: 18px 0
+    width: 100%
+    font-size: 15px
+    position: relative
+    &:hover
+        transform: translate(0, 4px)
+
+.image
+    display: flex
+    width: 100%
+    justify-content: flex-end
+    img
+        width: 100%
+        max-width: 700px

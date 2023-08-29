@@ -1,0 +1,103 @@
+@import '@variables'
+
+.plans
+    margin: 150px auto 0
+    padding-bottom: 100px
+
+.wrapper
+    margin-top: 100px
+    display: flex
+    align-items: center
+    justify-content: center
+
+.title
+    font-size: 28px
+    font-weight: 900
+
+.price
+    font-size: 48px
+    font-weight: 900
+    position: relative
+    &::before
+        content: '$'
+        color: #000
+        opacity: 0.5
+        font-weight: 400
+        font-size: 14px
+        position: absolute
+        top: 10px
+        left: -10px
+    &::after
+        content: '/m'
+        color: #000
+        font-weight: 400
+        opacity: 0.5
+        font-size: 14px
+        position: absolute
+        bottom: 10px
+        right: -16px
+
+.list
+    margin-top: 24px
+    span
+        display: block
+        padding-left: 10px
+        position: relative
+        &::before
+            content: '$'
+            color: #000
+            opacity: 0.5
+            font-weight: 400
+            font-size: 14px
+            position: absolute
+            top: 0
+            left: -10px
+
+.dots
+    font-size: 30px
+
+.btn
+    box-shadow: 0px 6px 20px 3px rgba(31, 100, 255, 0.30)
+    padding: 20px
+    margin-top: 20px
+    width: 100%
+
+.block
+    display: flex
+    flex-direction: column
+    align-items: center
+    border-radius: 10px
+    border: 1px solid $lh-bl
+    padding: 24px
+    width: 340px
+    z-index: 1
+    background: #fff
+    transition: 0.3s cubic-bezier(0.5, 0.65, 1, 1)
+    &:first-child
+        position: relative
+        right: -40px
+    &:nth-child(2)
+        background: $lh-bl
+        color: #fff
+        z-index: 2
+        transform: scale(1.15)
+        box-shadow: 0px 6px 20px 3px rgba(31, 100, 255, 0.30)
+        .list
+            span
+                color: #fff
+                &::before
+                    color: #fff
+        .price
+            color: #fff
+            &::before
+                color: #fff
+            &::after
+                color: #fff
+        .dots
+            color: #fff
+    &:last-child
+        position: relative
+        left: -40px
+    &:hover
+        z-index: 3
+        transform: scale(1.2)

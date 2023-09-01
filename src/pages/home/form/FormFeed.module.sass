@@ -15,4 +15,34 @@
     color: #fff
 
 .form
-    background: #f4f4f4
+    padding: 80px 80px 0 0
+
+.input_row
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 24px
+    align-items: center
+    justify-content: space-between
+    margin-bottom: 30px
+
+.input_block
+    display: flex
+    flex-direction: column
+    gap: 12px
+
+.input
+    border-bottom: 1px solid $lh-bl
+    width: 100%
+    padding-bottom: 20px
+    min-width: 100%
+
+.btn
+    max-width: 200px
+    margin-top: 100px
+    padding: 18px 0
+    width: 100%
+    &:hover
+        transform: translateY(4px)
+
+.error
+    color: #720000

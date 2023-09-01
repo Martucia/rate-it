@@ -27,7 +27,7 @@ const AboutUs = () => {
                             <li>Have clear action items [who, what, when] at the end of the meeting</li>
                         </ul>
                     </div>
-                    <p>
+                    <p className={styles.text}>
                         Rate It was created to help leaders and managers have epic meetings that aren’t wasting anyone’s time.
                         With timely feedback on how meetings can be productive, you will soon be holding world-class and super effective meetings.
                     </p>

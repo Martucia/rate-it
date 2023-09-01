@@ -1,3 +1,5 @@
+import Footer from "./footer/Footer.tsx";
+import Header from "./header/Header.tsx";
 import AboutUs from "./aboutUs/AboutUs.tsx";
 import Banner from "./banner/Banner.tsx";
 import FirstRateOut from "./firstRateOut/FirstRateOut.tsx";
@@ -10,13 +12,17 @@ import WhyItsImportant from "./whyItsImportant/WhyItsImportant.tsx";
 const HomePage = () => {
     return (
         <>
+            <Header />
             <Banner />
-            <HowItWorks />
+            <div id="howItWorks">
+                <HowItWorks />
+            </div>
             <WhyItsImportant />
             <Plans />
             <FirstRateOut />
             <AboutUs />
             <FormFeed />
+            <Footer />
         </>
     );
 }

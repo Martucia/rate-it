@@ -2,7 +2,7 @@ import styles from './Plans.module.sass';
 
 const Plans = () => {
     return (
-        <section className={styles.plans}>
+        <section className={styles.plans} id="pricing">
             <h2 className="sec-title" style={{ textAlign: "center" }}>
                 Customizable plans for every company
             </h2>

@@ -19,10 +19,10 @@ const Project = () => {
 
                 <Routes>
                     <Route path='/overview' element={<Meetings />} />
-                    <Route path='/insights' element={<Soon />} />
-                    <Route path='/templates' element={<Soon />} />
-                    <Route path='/membership' element={<Soon />} />
-                    <Route path='/settings' element={<Soon />} />
+                    <Route path='/insights' element={<Soon fixed={false} />} />
+                    <Route path='/templates' element={<Soon fixed={false} />} />
+                    <Route path='/membership' element={<Soon fixed={false} />} />
+                    <Route path='/settings' element={<Soon fixed={false} />} />
                     <Route path='*' element={<NotFound />} />
                     <Route path='/error' element={<Error />} />
                 </Routes>

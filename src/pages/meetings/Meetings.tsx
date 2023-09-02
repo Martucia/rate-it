@@ -4,6 +4,7 @@ import styles from './Meetings.module.sass';
 
 import Title from '../../components/title/Title';
 import MeetBlock from '../../components/meetBlock/MeetBlock';
+import Empty from '../systemPages/Empty';
 
 const pages = [
     'Upcoming',
@@ -12,57 +13,7 @@ const pages = [
 ];
 
 const meetings = [
-    {
-        name: "Sales Kickoff Meeting",
-        date: "2023-09-17T11:26:01.769+00:00",
-        mark: false,
-        participants: [
-            {
-                name: "John"
-            },
-            {
-                name: "Marta"
-            },
-            {
-                name: "Vitya"
-            },
-            {
-                name: "Roma"
-            }
-        ]
-
-    },
-    {
-        name: "Marketing Biweekly",
-        date: "2023-09-04T11:26:01.769+00:00",
-        mark: true,
-        participants: [
-            {
-                name: "John"
-            },
-            {
-                name: "Marta"
-            },
-            {
-                name: "Roma"
-            }
-        ]
-
-    },
-    {
-        name: "Team Call",
-        date: "2023-09-02T11:26:01.769+00:00",
-        mark: true,
-        participants: [
-            {
-                name: "John"
-            },
-            {
-                name: "Marta"
-            }
-        ]
-
-    }
+    
 ]
 
 const Meetings = () => {
@@ -82,9 +33,12 @@ const Meetings = () => {
             </nav>
 
             <div className={styles.list}>
-                {meetings.map(meet => (
-                    <MeetBlock key={meet.name} {...meet} />
-                ))}
+                {meetings.length > 0
+                    ? meetings.map(meet => (
+                        <MeetBlock key={meet.name} {...meet} />
+                    ))
+                    : <Empty fixed={false} />
+                }
             </div>
         </div>
     );

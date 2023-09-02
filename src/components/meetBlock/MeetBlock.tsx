@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import { formatDate } from '../../utils/functions.tsx';
+import Toggle from '../toggle/Toggle.tsx';
+import MeetDropDown from '../meetDropDown/MeetDropDown.tsx';
 
 import styles from './MeetBlock.module.sass';
 
 import settings from '@images/settings3.svg';
 import participantsImg from '@images/participants.svg';
-import Toggle from '../toggle/Toggle.tsx';
 
 interface MeetBlockProps {
     name: string,
@@ -18,6 +19,9 @@ interface MeetBlockProps {
 
 const MeetBlock = ({ name, mark = false, date, participants, rate }: MeetBlockProps) => {
     const [isMarked, setMarked] = useState(mark);
+    const [isMenuOpen, setMenuOpen] = useState(false);
+
+    const dots = useRef<HTMLButtonElement | null>(null);
 
     const handleSetMarked = () => {
         setMarked(!isMarked);
@@ -58,6 +62,17 @@ const MeetBlock = ({ name, mark = false, date, participants, rate }: MeetBlockPr
                     <Toggle />
                 </div>
             </div>
+
+            <button ref={dots} onClick={() => setMenuOpen(prev => !prev)} className={styles.dots}>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            {isMenuOpen && <MeetDropDown
+                setOpen={setMenuOpen}
+                button={dots}
+            />}
 
         </div>
     );

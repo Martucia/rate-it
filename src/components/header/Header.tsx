@@ -12,10 +12,14 @@ const Header = () => {
     const [isOpen, setOpen] = useState(false);
 
     const userBlock = useRef<HTMLDivElement | null>(null);
+    const dots = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (userBlock.current && !userBlock.current.contains(event.target as Node)) {
+            if (userBlock.current
+                && !userBlock.current.contains(event.target as Node)
+                && !dots.current?.contains(event.target as Node)
+            ) {
                 setOpen(false);
             }
         };
@@ -43,7 +47,7 @@ const Header = () => {
                     <img src={notification} alt="notification" />
                 </button>
 
-                <button onClick={() => setOpen(prev => !prev)} className={styles.user}>
+                <button ref={dots} onClick={() => setOpen(prev => !prev)} className={styles.user}>
                     <div className={styles.avatar}>
                         <img src={avatar} alt="avatar" />
                     </div>

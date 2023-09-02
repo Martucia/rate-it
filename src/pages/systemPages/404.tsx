@@ -2,9 +2,9 @@ import styles from './styles.module.sass';
 
 import img from '@images/not_found.svg';
 
-const NotFound = () => {
+const NotFound = ({ fixed = true }) => {
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page}  ${fixed && styles.fixed}`}>
             <div className={styles.image}>
                 <img src={img} alt="" />
             </div>

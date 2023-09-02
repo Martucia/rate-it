@@ -1,13 +1,16 @@
 .page
-    width: 100vw
-    height: 100vh
+    width: 100%
     display: flex
     flex-direction: column
     gap: 40px
     align-items: center
     justify-content: center
     margin: 0 auto
-    padding: 0 30px
+    // padding: 70px 0 0
+    max-width: 600px
+    height: calc(100% - 190px)
+
+.fixed
     position: fixed
     left: 0
     top: 0
@@ -15,9 +18,14 @@
     bottom: 0
     background: #fff
     z-index: 7
+    padding: 0 30px
+    width: 100vw
+    height: 100vh
+    max-width: none
 
 .image
     max-width: 1000px
+    width: 100%
     img
         width: 100%
 

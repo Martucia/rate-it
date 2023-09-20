@@ -13,7 +13,46 @@ const pages = [
 ];
 
 const meetings = [
-    
+    {
+        name: "Sales Kickoff Meeting",
+        mark: true,
+        date: "07-09-2023",
+        participants: [
+            'zixwelly.maks@gmail.com',
+            'zuhes@gmail.com'
+        ],
+        rate: null
+    },
+    {
+        name: "Sales Kickoff Meeting",
+        mark: true,
+        date: "07-09-2023",
+        participants: [
+            'zixwelly.maks@gmail.com',
+            'zuhes@gmail.com'
+        ],
+        rate: 3
+    },
+    {
+        name: "Sales Kickoff Meeting",
+        mark: true,
+        date: "07-09-2023",
+        participants: [
+            'zixwelly.maks@gmail.com',
+            'zuhes@gmail.com'
+        ],
+        rate: 6
+    },
+    {
+        name: "Sales Kickoff Meeting",
+        mark: true,
+        date: "07-09-2023",
+        participants: [
+            'zixwelly.maks@gmail.com',
+            'zuhes@gmail.com'
+        ],
+        rate: 9
+    }
 ]
 
 const Meetings = () => {

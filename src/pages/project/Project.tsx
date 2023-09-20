@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom'
 
 import styles from './Project.module.sass';
 
@@ -8,8 +9,17 @@ import Meetings from '../meetings/Meetings';
 import NotFound from '../systemPages/404';
 import Error from '../systemPages/400';
 import Soon from '../systemPages/Soon';
+import Tasks from '../tasks/Tasks';
 
 const Project = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (window.location.pathname === '/project/' || window.location.pathname === '/project') {
+            navigate('/project/tasks', { replace: true });
+        }
+    }, []);
+
     return (
         <div className={styles.project}>
             <NavMenu />
@@ -19,6 +29,7 @@ const Project = () => {
 
                 <Routes>
                     <Route path='/overview' element={<Meetings />} />
+                    <Route path='/tasks' element={<Tasks />} />
                     <Route path='/insights' element={<Soon fixed={false} />} />
                     <Route path='/templates' element={<Soon fixed={false} />} />
                     <Route path='/membership' element={<Soon fixed={false} />} />

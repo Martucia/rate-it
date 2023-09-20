@@ -1,3 +1,5 @@
+@import '@variables'
+
 .meet
     margin-bottom: 20px
     display: grid
@@ -34,7 +36,7 @@
 .date
     grid-area: date
     color: #AAB2C8
-    font-size: 20px
+    font-size: 18px
     font-weight: 600
     margin-top: 6px
 
@@ -42,7 +44,7 @@
     display: flex
     align-items: center
     justify-content: flex-end
-    gap: 30px
+    gap: 50px
     grid-area: btns
     width: 100%
 
@@ -67,15 +69,25 @@
     flex-direction: column
     align-items: center
     gap: 5px
-    span
-        color: #AAB2C8
-        font-size: 10px
-        font-weight: 600
+
+.rate_text
+    color: #AAB2C8
+    font-size: 12px
+    font-weight: 600
 
 .rate_number
     height: 24px
     display: flex
     align-items: center
+
+.rate_value
+    font-size: 26px
+    &.low
+        color: $red
+    &.medium
+        color: $orange
+    &.high
+        color: $tq-ad
 
 .border
     height: 2px

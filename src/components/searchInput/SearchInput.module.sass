@@ -1,0 +1,28 @@
+.search
+    width: 100%
+    position: relative
+    display: block
+    &::before
+        content: ''
+        width: 16px
+        height: 16px
+        background-repeat: no-repeat
+        background-size: contain
+        position: absolute
+        left: 23px
+        top: 50%
+        transform: translateY(-50%)
+        background-image: url("@images/search.svg")
+        z-index: 2
+
+.input
+    border-radius: 8px
+    border: 1px solid #EBEEF2
+    background: #FFF
+    width: 100%
+    font-size: 16px
+    position: relative
+    z-index: 1
+    font-weight: 500
+
+    

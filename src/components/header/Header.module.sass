@@ -2,99 +2,59 @@
     display: flex
     align-items: center
     justify-content: space-between
-    padding: 80px 0 50px 0
+    // grid-template-columns: 1fr max-content max-content
+    padding: 0 30px
     width: 100%
     gap: 48px
+    height: 90px
+    border-bottom: 1px solid #E9EBF0
 
-.inputs
-    display: grid
+.nav
+    display: flex
     align-items: center
-    gap: 36px
-    grid-template-columns: 2fr 1fr
+    gap: 32px
     width: 100%
 
-.input
-    border-radius: 10px
-    background: #F5F6FA
-    padding: 14px 16px
-    padding-left: 30px
-    width: 100%
-    font-size: 16px
-    position: relative
-    z-index: 1
-    font-weight: 500
-
-.input_block
-    position: relative
-    display: block
-    &::before
-        content: ''
-        width: 16px
-        height: 16px
-        background-repeat: no-repeat
-        background-size: contain
-        position: absolute
-        left: 23px
-        top: 50%
-        transform: translateY(-50%)
-        z-index: 2
-
-.search
-    input
-        padding-left: 55px
-    &::before
-        background-image: url("@images/search.svg")
-
-// .date
-//     &::before
-//         background-image: url("@images/calendar.svg")
+.link
+    color: #7A8699
+    font-size: 12px
+    font-weight: 700
+    line-height: 16px
+    &:hover, &.active
+        color: #323C4D
 
 .personal
     display: flex
     align-items: center
-    gap: 45px
+    gap: 12px
     position: relative
-
-.avatar
-    border-radius: 100%
-    width: 36px
-    height: 36px
-    overflow: hidden
 
 .user
     display: flex
     align-items: center
     gap: 10px
-
-.dots
-    display: flex
-    flex-direction: column
-    justify-content: space-between
-    gap: 3px
-    span
-        width: 4px
-        height: 4px
-        border-radius: 100%
-        background: #AAB2C8
+    position: relative
+    cursor: pointer
 
 .user_block
     position: absolute
     right: 0
     top: calc(100% + 12px)
-    width: 100%
+    width: max-content
     border-radius: 10px
     background: #FFF
     box-shadow: 1px 4px 10px 0px rgba(170, 178, 200, 0.45)
-    padding: 16px 12px
+    padding: 16px 6px
     display: flex
     flex-direction: column
     gap: 12px
+    z-index: 6
     a, button
         display: flex
         align-items: center
         gap: 10px
         transition: 0.3s
         border-radius: 4px
-        padding: 6px 4px
+        padding: 6px 10px
         &:hover
             background: #f4f4f4

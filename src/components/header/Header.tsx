@@ -1,75 +1,79 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 
+import { ClickOutside } from '../../utils/functions';
+
+import SearchInput from '../searchInput/SearchInput';
+import Avatar from '../avatar/Avatar';
+
 import styles from './Header.module.sass';
 
-import notification from '@images/notification.svg';
-import avatar from '@images/avatar.png';
+import notification from '@images/notifications.svg';
 import settings from '@images/settings2.svg';
 import logout from '@images/logout.svg';
+import { useAppDispatch, useAppSelector } from '../../actions/redux';
+import { userSlice } from '../../store/reducers/userSlice';
 
 const Header = () => {
     const [isOpen, setOpen] = useState(false);
 
-    const userBlock = useRef<HTMLDivElement | null>(null);
-    const dots = useRef<HTMLButtonElement | null>(null);
+    const firstName = useAppSelector(state => state.userReducer.user?.firstName)
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (userBlock.current
-                && !userBlock.current.contains(event.target as Node)
-                && !dots.current?.contains(event.target as Node)
-            ) {
-                setOpen(false);
-            }
-        };
+    const dots = useRef<HTMLDivElement | null>(null);
+    const dispatch = useAppDispatch();
 
-        window.addEventListener('mousedown', handleClickOutside);
+    useEffect(() => ClickOutside({ element: dots, close: setOpen }), []);
 
-        return () => {
-            window.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    const setClass = ({ isActive }: { isActive: boolean }) => (isActive ? `${styles.active} ${styles.link}` : styles.link);
 
     return (
         <header className={styles.header}>
-            <div className={styles.inputs}>
-                <div className={`${styles.search} ${styles.input_block}`}>
-                    <input placeholder='Seach' type="text" className={styles.input} />
-                </div>
-                <div className={`${styles.date} ${styles.input_block}`}>
-                    <input type="date" className={styles.input} />
-                </div>
-            </div>
+            <SearchInput paddingY={14} />
+
+            <nav className={styles.nav}>
+                <NavLink to="/tasks" className={setClass}>
+                    Dashboard
+                </NavLink>
+                <NavLink to="/tasks" className={setClass}>
+                    My Tasks
+                </NavLink>
+                <NavLink to="/tasks" className={setClass}>
+                    My Tasks
+                </NavLink>
+                <NavLink to="/tasks" className={setClass}>
+                    Reporting
+                </NavLink>
+                <NavLink to="/tasks" className={setClass}>
+                    Portfolios
+                </NavLink>
+                <NavLink to="/tasks" className={setClass}>
+                    Goals
+                </NavLink>
+            </nav>
 
             <div className={styles.personal}>
                 <button className={styles.notification}>
                     <img src={notification} alt="notification" />
                 </button>
 
-                <button ref={dots} onClick={() => setOpen(prev => !prev)} className={styles.user}>
-                    <div className={styles.avatar}>
-                        <img src={avatar} alt="avatar" />
-                    </div>
-                    <div className={styles.dots}>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </button>
+                <div ref={dots} onClick={() => setOpen(prev => !prev)} className={styles.user}>
+                    <Avatar percentage={10} size={40} />
 
-                {isOpen && (
-                    <div ref={userBlock} className={styles.user_block}>
-                        <NavLink to='/project/settings' onClick={() => setOpen(false)}>
-                            <img src={settings} alt="" />
-                            Settings
-                        </NavLink>
-                        <button>
-                            <img src={logout} alt="" />
-                            Log out
-                        </button>
-                    </div>
-                )}
+                    {firstName}
+
+                    {isOpen && (
+                        <div className={styles.user_block}>
+                            <NavLink to='/project/settings' onClick={() => setOpen(false)}>
+                                <img src={settings} alt="" />
+                                Settings
+                            </NavLink>
+                            <button onClick={() => dispatch(userSlice.actions.logOut())}>
+                                <img src={logout} alt="" />
+                                Log out
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
         </header>
     );

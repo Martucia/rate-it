@@ -14,10 +14,10 @@ interface MeetBlockProps {
     mark: boolean,
     date: string,
     participants: any[],
-    rate?: number
+    rate?: number | null
 }
 
-const MeetBlock = ({ name, mark = false, date, participants, rate }: MeetBlockProps) => {
+const MeetBlock = ({ name, mark = false, date, participants, rate = null }: MeetBlockProps) => {
     const [isMarked, setMarked] = useState(mark);
     const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -26,6 +26,8 @@ const MeetBlock = ({ name, mark = false, date, participants, rate }: MeetBlockPr
     const handleSetMarked = () => {
         setMarked(!isMarked);
     }
+
+    const rateClassName = rate === null ? null : rate < 5 ? styles.low : rate < 7 ? styles.medium : styles.high;
 
     const meetTime = () => formatDate(date);
 
@@ -55,8 +57,18 @@ const MeetBlock = ({ name, mark = false, date, participants, rate }: MeetBlockPr
                     <span>Edit</span>
                 </button>
                 <div className={styles.rate}>
-                    <div className={styles.rate_number}>{rate ? `${rate}/10` : <span className={styles.border}></span>}</div>
-                    <span>Average rating</span>
+                    <div className={styles.rate_number}>
+                        {
+                            rate
+                                ? <>
+                                    <span className={`${styles.rate_value} ${rateClassName}`}>
+                                        {rate}
+                                    </span>
+                                    /10
+                                </>
+                                : <span className={styles.border}></span>}
+                    </div>
+                    <span className={styles.rate_text}>Average rating</span>
                 </div>
                 <div className={styles.actived}>
                     <Toggle />

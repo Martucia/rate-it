@@ -24,13 +24,18 @@ const CreateProject = () => {
     const navigate = useNavigate();
 
     const handleCloseModal = () => {
-        dispatch(commonSlice.actions.toggleModal({ modalName: "projectCreateOpen", isOpen: false }))
+        dispatch(commonSlice.actions.toggleParam({
+            param: "projectCreateOpen",
+            value: false
+        }))
     }
+
+    console.log(isLoading)
 
     const handleCreateProject = async () => {
         let id = await dispatch(createProject({ name }));
 
-        navigate('/tasks/?project=' + id);
+        navigate('/tasks/' + id);
     }
 
     return (

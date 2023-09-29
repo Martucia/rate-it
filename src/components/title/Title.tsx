@@ -9,7 +9,7 @@ import { updateProject } from '../../actions/projects';
 interface TitleProps {
     // title: string;
     isEdited: boolean,
-    id: number
+    id: number | null
 }
 
 const Title = ({ id, isEdited }: TitleProps) => { //  title, 
@@ -27,10 +27,14 @@ const Title = ({ id, isEdited }: TitleProps) => { //  title,
         if (title) setValue(title);
     }, [title])
 
-    const save = (val: string | number) => {
-        console.log("save " + val)
-        if (value.length > 0) {
+    const save = () => {
+
+        if (value.length > 0 && id) {
             dispatch(updateProject({ name: value, id }));
+        } else {
+            if (title) {
+                setValue(title);
+            }
         }
     }
 
@@ -39,32 +43,38 @@ const Title = ({ id, isEdited }: TitleProps) => { //  title,
     }
 
     const handleToggleEdit = () => {
-
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-
         setEdit(!isEdit);
 
-        if (title !== value) {
-            save(value);
+        if (title !== value && isEdit) {
+            save();
         }
+    }
+
+    useEffect(() => {
+        if (isEdit && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isEdit])
+
+
+    const closeEdit = (val: boolean) => {
+        save();
+
+        setEdit(val);
     }
 
     const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
 
         if (event.key === "Enter") {
-            console.log(title, value)
-
             if (title !== value) {
-                save(value);
+                save();
             }
 
             setEdit(false);
         }
     }
 
-    useEffect(() => ClickOutside({ element: titleRef, close: setEdit }), []);
+    useEffect(() => ClickOutside({ element: titleRef, close: closeEdit }), []);
 
     return (
         <h3 ref={titleRef} className={styles.title}>
@@ -76,9 +86,10 @@ const Title = ({ id, isEdited }: TitleProps) => { //  title,
                     onChange={handleOnChangle}
                     onKeyDown={handleEnterPress}
                 />
-                : <>
+                : <span onDoubleClick={handleToggleEdit}>
                     {value}
-                </>}
+                </span>
+            }
 
             {isEdited
                 && <button onClick={handleToggleEdit}>

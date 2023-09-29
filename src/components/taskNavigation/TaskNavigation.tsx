@@ -13,9 +13,10 @@ import styles from './TaskNavigation.module.sass';
 import board from '@images/board.svg'
 import list from '@images/list.svg'
 import edit from '@images/board_edit.svg'
+import new_stage from '@images/new_stage.svg'
 
 interface TaskNavigationProps {
-    projectId: number
+    projectId: number | null
 }
 
 const TaskNavigation = ({ projectId }: TaskNavigationProps) => {
@@ -29,6 +30,13 @@ const TaskNavigation = ({ projectId }: TaskNavigationProps) => {
     const changeViewHandle = (view: string) => {
         dispatch(commonSlice.actions.changeView({ view }));
     };
+
+    const handleOpenStageCreate = () => {
+        dispatch(commonSlice.actions.toggleParam({
+            param: "isStageCreateOpen",
+            value: true
+        }))
+    }
 
     return (
         <>
@@ -77,6 +85,10 @@ const TaskNavigation = ({ projectId }: TaskNavigationProps) => {
                     <div className={styles.btns}>
                         <button>
                             <img src={edit} alt="edit" />
+                        </button>
+
+                        <button onClick={handleOpenStageCreate}>
+                            <img src={new_stage} alt="" />
                         </button>
                     </div>
                 </div>

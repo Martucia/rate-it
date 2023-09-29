@@ -14,7 +14,8 @@ interface FastNewTaskProps {
 }
 
 const FastNewTask = ({ close, stageId }: FastNewTaskProps) => {
-    const [projectId, setProjectId] = useState<any>(undefined);
+    // const [projectId, setProjectId] = useState<any>(undefined);
+    const projectId = useAppSelector(state => state.commonReducer.projectId);
     const [title, setTitle] = useState("");
     const user = useAppSelector(state => state.userReducer.user)
 
@@ -22,15 +23,9 @@ const FastNewTask = ({ close, stageId }: FastNewTaskProps) => {
 
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        const url = new URL(window.location.href);
-        const projectParam = url.searchParams.get('project');
-
-        setProjectId(projectParam);
-    }, [window.location.href]);
-
     const handleSaveTask = () => {
         if (user) {
+            console.log(projectId)
             dispatch(createTask({
                 title,
                 stage: stageId,

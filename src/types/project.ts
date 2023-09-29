@@ -1,6 +1,6 @@
 import { IStage } from "./stage"
 // import { ITask } from "./task"
-import { IUser } from "./user"
+import { IParticipant, IUser } from "./user"
 
 export interface IProject {
     id: number
@@ -8,10 +8,13 @@ export interface IProject {
     createdAt: Date,
     updatedAt: Date,
     // tasks: ITask[],
-    participants: IUser[],
-    stages: IStage[]
+    participants: IParticipant[],
+    stages: IStage[],
+    downloadedTask: 'all' | 'one' | 'none'
 }
 
-export interface IProjectCreate extends Omit<IProject, 'id' | 'createdAt' | 'updatedAt' | 'tasks' | 'participants' | 'stages'> { }
+export interface IProjectCreate {
+    name: string
+}
 
 export interface IProjectUpdate extends Partial<IProject> { }

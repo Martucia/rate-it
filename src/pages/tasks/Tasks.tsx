@@ -1,43 +1,50 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useParams } from 'react-router-dom'
 
 import TaskNavigation from '../../components/taskNavigation/TaskNavigation';
 import Kanban from '../../components/tasks/kanban/Kanban';
 import NotFound from '../systemPages/404';
 
 import styles from './Tasks.module.sass';
-import { useAppDispatch } from '../../actions/redux';
+import { useAppDispatch, useAppSelector } from '../../actions/redux';
 import { useEffect, useState } from 'react';
-import { getProject } from '../../actions/projects';
 import { getAllTasks } from '../../actions/tasks';
+import { commonSlice } from '../../store/reducers/commonSlice';
+import Task from '../../components/modals/task/Task';
 
 
 const Tasks = () => {
-    const [projectId, setProjectId] = useState<any>(undefined);
-    // const tasks = useAppSelector(state => state.projectReducer.projects.find(project => project.id === projectId)?.tasks);
+    const [projectIdCurrent, setProjectIdCurrent] = useState<number | null>(null);
+    const project = useAppSelector(state => state.projectReducer.projects.find(pr => pr.id === projectIdCurrent));
 
     const dispatch = useAppDispatch();
+    const { projectId } = useParams();
 
     useEffect(() => {
-        const url = new URL(window.location.href);
-        const projectParam = url.searchParams.get('project');
-
-        setProjectId(projectParam);
+        setProjectIdCurrent(projectId ? +projectId : null);
+        dispatch(commonSlice.actions.toggleParam({ param: "projectId", value: Number(projectId) }))
     }, [window.location.href]);
 
     useEffect(() => {
-        if (projectId) {
-            dispatch(getProject(+projectId));
+
+        if (projectId && project && project.downloadedTask !== "all") {
             dispatch(getAllTasks(+projectId));
         }
-    }, [projectId])
+    }, [projectId, project])
 
     return (
         <div className={styles.tasks}>
-            <TaskNavigation projectId={+projectId} />
+            <TaskNavigation projectId={projectIdCurrent} />
 
             <div className={styles.wrapper}>
                 <Routes>
-                    <Route path='/' element={<Kanban projectId={+projectId} />} />
+                    <Route
+                        path='/*'
+                        element={
+                            <Kanban
+                                projectId={projectIdCurrent}
+                            />
+                        }
+                    />
                     <Route path='*' element={<NotFound fixed={false} />} />
                 </Routes>
             </div>

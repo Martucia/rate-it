@@ -1,15 +1,22 @@
+import { BASE_URL } from '../../utils/constants';
 import styles from './Avatar.module.sass';
 
 import avatar from '@images/avatar.png'
 
 interface CircleProps {
-    colour: any,
-    pct?: any
+    colour: string,
+    pct?: number,
 }
 
 interface AvatarProps {
-    percentage: any,
-    size: any
+    percentage: number,
+    size: number,
+    avatar: string | undefined | null,
+    notifications: number
+}
+
+interface ImageProps {
+    img: string | undefined | null
 }
 
 const cleanPercentage = (percentage: number) => {
@@ -26,7 +33,7 @@ const setColor = (percentage: number) => {
     }
 }
 
-const Circle = ({ colour, pct }: CircleProps) => {
+const Circle = ({ colour, pct = 0 }: CircleProps) => {
     const r = 18;
     const circ = 2 * Math.PI * r;
     const strokePct = ((100 - pct) * circ) / 100;
@@ -46,15 +53,15 @@ const Circle = ({ colour, pct }: CircleProps) => {
     );
 };
 
-const Image = () => {
+const Image = ({ img }: ImageProps) => {
     return (
         <div className={styles.image}>
-            <img src={avatar} alt="avatar" />
+            <img src={`${BASE_URL}/file/${img}`} alt="avatar" />
         </div>
     );
 };
 
-const Avatar = ({ percentage, size }: AvatarProps) => {
+const Avatar = ({ percentage, size, avatar, notifications }: AvatarProps) => {
     const pct = cleanPercentage(percentage);
     const color = setColor(percentage);
 
@@ -66,10 +73,13 @@ const Avatar = ({ percentage, size }: AvatarProps) => {
                     <Circle colour={color} pct={pct} />
                 </g>
             </svg>
-            <Image />
-            <div className={styles.count}>
-                5
-            </div>
+            <Image img={avatar} />
+            {notifications && (
+                <div className={styles.count}>
+                    {notifications}
+                </div>
+            )}
+
         </div>
 
     );

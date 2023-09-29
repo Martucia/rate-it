@@ -1,3 +1,17 @@
+.stage
+    // overflow-x: hidden
+    width: 350px
+    min-width: 350px
+    max-width: 350px
+    padding-bottom: 10px
+    display: flex
+    flex-direction: column
+
+.dragTo
+    width: 350px
+    min-width: 350px
+    max-width: 350px
+
 .name
     display: flex
     align-items: center
@@ -10,6 +24,8 @@
     padding: 10px 20px
     border-radius: 16px 16px 6px
     cursor: grab
+    position: relative
+    height: 44px
 
 .count
     width: 24px
@@ -19,7 +35,7 @@
     justify-content: center
     border-radius: 50%
     position: relative
-    overflow: hidden
+    // overflow: hidden
     background-color: #ffffffdc
 
 .count_bg
@@ -49,7 +65,11 @@
     display: flex
     flex-direction: column
     gap: 16px
-    padding-bottom: 16px
+    // padding-bottom: 16px
+    max-height: 500px
+    overflow-y: auto
+    margin-bottom: 16px
+    overflow-x: hidden
 
 .plus
     width: 100%
@@ -79,6 +99,7 @@
     color: #1F2633
     font-weight: 600
     line-height: 20px
+    font-size: 14px
     &.error
         border-bottom: 1px solid #c50000
 
@@ -98,3 +119,16 @@
     display: flex
     align-items: center
     gap: 8px
+
+.content
+    display: flex
+    align-items: center
+    justify-content: flex-end
+    margin-bottom: 32px
+    button
+        font-size: 14px
+        font-weight: 600
+        color: rgba(0, 0, 0, 0.5)
+        transition: 0.3s
+        &:hover
+            color: #000

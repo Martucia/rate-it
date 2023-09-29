@@ -1,13 +1,12 @@
 import styles from './Participants.module.sass';
-
-import avatar from '@images/avatar.png';
 import plus from '@images/pl.svg';
-import { IUser } from '../../types/user';
+import { IParticipant } from '../../types/user';
 import { useAppDispatch } from '../../actions/redux';
 import { commonSlice } from '../../store/reducers/commonSlice';
+import { BASE_URL } from '../../utils/constants';
 
 interface ParticipantProps {
-    image: string,
+    image: string | null,
     firstName: string,
     zIndex: number
 }
@@ -16,7 +15,7 @@ const Participant = ({ image, firstName, zIndex }: ParticipantProps) => {
     return (
         <div style={{ zIndex: zIndex }} className={styles.participant}>
             <div className={styles.participant_inner}>
-                <img src={image} alt={firstName} />
+                <img src={`${BASE_URL}/file/${image}`} alt={firstName} />
             </div>
         </div>
     );
@@ -24,30 +23,34 @@ const Participant = ({ image, firstName, zIndex }: ParticipantProps) => {
 
 interface ParticipantsProps {
     max: number,
-    participants: IUser[],
+    participants: IParticipant[],
     type: string,
-    id: number
+    id: number | null
 }
 
 const Participants = ({ max, participants, id, type }: ParticipantsProps) => {
 
-    const users: IUser[] = participants?.length > 5 ? participants.slice(0, 4) : participants;
+    const users: IParticipant[] = participants?.length > 5 ? participants.slice(0, 4) : participants;
 
     const dispatch = useAppDispatch();
 
     const handleOpenModal = () => {
-        dispatch(commonSlice.actions.openParticipantsModal({ type, id }))
+        if (id) {
+            dispatch(commonSlice.actions.openParticipantsModal({ type, id }))
+        }
     }
 
     if (participants) return (
         <div className={styles.participants}>
             <div className={styles.list}>
-                {users.map((user, index) => <Participant
-                    key={index}
-                    firstName={user.firstName}
-                    image={avatar}
-                    zIndex={index}
-                />)}
+                {users.map((user, index) => (
+                    <Participant
+                        key={index}
+                        firstName={user.user.firstName}
+                        image={user.user.avatar}
+                        zIndex={index}
+                    />
+                ))}
                 {participants.length > max
                     && <div className={styles.more}>
                         +{max}

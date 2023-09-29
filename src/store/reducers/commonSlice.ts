@@ -3,7 +3,13 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 // import { WritableDraft } from 'immer/dist/internal.js';
 import { produce, Draft } from 'immer'; // Додайте Draft для вказівки типу стану
 
+type TaskModalType = {
+    id: number | null,
+    isOpen: boolean
+}
+
 type CommonState = {
+    [key: string]: any,
     tasksView: string,
     projectCreateOpen: boolean,
     projectParticipantsOpen: boolean,
@@ -11,7 +17,9 @@ type CommonState = {
         type: string | null,
         id: number | null,
     },
-    [key: string]: any
+    isStageCreateOpen: boolean,
+    projectId: number | null,
+    taskModal: TaskModalType
 }
 
 type CommonStateKeys = keyof CommonState;
@@ -23,6 +31,12 @@ const initialState: CommonState = {
     projectParticipants: {
         type: null,
         id: null
+    },
+    isStageCreateOpen: false,
+    projectId: null,
+    taskModal: {
+        id: null,
+        isOpen: false
     }
 };
 
@@ -33,15 +47,19 @@ export const commonSlice = createSlice({
         changeView(state, action: PayloadAction<{ view: string }>) {
             state.tasksView = action.payload.view;
         },
-        toggleModal(state, action: PayloadAction<{ modalName: CommonStateKeys, isOpen: boolean }>) {
+        toggleParam(state, action: PayloadAction<{ param: CommonStateKeys, value: boolean | number }>) {
             return produce(state, (draft: Draft<CommonState>) => {
-                draft[action.payload.modalName] = action.payload.isOpen;
+                draft[action.payload.param] = action.payload.value;
             });
         },
         openParticipantsModal(state, action: PayloadAction<{ type: string, id: number }>) {
             state.projectParticipantsOpen = true;
             state.projectParticipants.id = action.payload.id;
             state.projectParticipants.type = action.payload.type;
+        },
+        toggleTaskModal(state, action: PayloadAction<TaskModalType>) {
+            state.taskModal.id = action.payload.id;
+            state.taskModal.isOpen = action.payload.isOpen;
         }
     },
 })

@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 
@@ -34,18 +33,21 @@ const Registration = () => {
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const handleSubmit = (data: IRegUser, setSubmitting: Function) => {
-        dispatch(registration(data));
+    const fromPage = location.state?.from || '/tasks';
+
+    const handleSubmit = async (data: IRegUser, setSubmitting: Function) => {
+        const result = await dispatch(registration(data));
+
+        if (result) navigate(fromPage);
 
         setSubmitting(false)
     }
 
-    useEffect(() => {
-        if (isAuth) {
-            navigate('/tasks')
-        }
-    }, [isAuth]);
+    if (isAuth) {
+        return <Navigate to="/tasks/own" />
+    }
 
     return (
         <div className={styles.auth}>
@@ -60,6 +62,7 @@ const Registration = () => {
                         lastName: '',
                         email: '',
                         password: '',
+                        
                     }}
                     onSubmit={(
                         values: IRegUser,

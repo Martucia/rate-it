@@ -1,11 +1,11 @@
 // import { useState } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../actions/redux';
 
 import Stage from '../../stage/Stage';
 
 import styles from './Kanban.module.sass';
-import CreateStage from '../../stage/CreateStage';
+import CreateUpdateStage from '../../stage/CreateUpdateStage';
 import { IStage, IStageCreate } from '../../../types/stage';
 import { createStage, moveStages } from '../../../actions/stages';
 import {
@@ -23,18 +23,25 @@ import { createPortal } from "react-dom";
 import TaskBlock from '../../taskBlock/TaskBlock';
 import { ITask } from '../../../types/task';
 import { IProject } from '../../../types/project';
-
+import { moveTasks } from '../../../actions/tasks';
+import empty from '@images/empty.png'
+import { commonSlice } from '../../../store/reducers/commonSlice';
+import { Route, Routes } from 'react-router-dom';
+import Task from '../../modals/task/Task';
 
 interface KanbanProps {
-    projectId: number
+    projectId: number | null
 }
 
 const Kanban = ({ projectId }: KanbanProps) => {
-    const view = useAppSelector(state => state.commonReducer.tasksView);
+    const { tasksView, isStageCreateOpen } = useAppSelector(state => state.commonReducer);
 
-    const project = useAppSelector<IProject | undefined>(state => state.projectReducer.projects.find(project => project.id === projectId));
+    const project = useAppSelector<IProject | undefined>(state =>
+        state.projectReducer.projects.find(project => project.id === projectId)
+    );
 
     const [stages, setStages] = useState<IStage[]>([]);
+    const kanbanRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (project) {
@@ -44,18 +51,39 @@ const Kanban = ({ projectId }: KanbanProps) => {
         }
     }, [project]);
 
-    const [isNewStageCreating, setNewStageCreating] = useState(false);
-
-    const stagesId = useMemo(() => stages.map((stage: any) => stage.id), [stages]);
+    const stagesId = useMemo(() => stages.map((stage: IStage) => stage.id), [stages]);
 
     const [activeStage, setActiveStage] = useState<IStage | null>(null);
     const [activeTask, setActiveTask] = useState<ITask | null>(null);
 
+    const [isScrolledToLeft, setIsScrolledToLeft] = useState(true);
+    const [isScrolledToRight, setIsScrolledToRight] = useState(true);
+
     const dispatch = useAppDispatch();
 
-    const handleCreateStage = (data: IStageCreate) => {
+    const tasksSelector = useAppSelector<ITask[]>(state => state.taskReducer.tasks);
+
+    const [tasks, setTasks] = useState<ITask[]>([]);
+
+    useEffect(() => {
+        if (tasksSelector) {
+            const taskstOut = [...tasksSelector];
+            taskstOut.sort((a, b) => a.index - b.index)
+            setTasks(taskstOut);
+        }
+    }, [tasksSelector]);
+
+    const handleOpenStageCreate = (val: boolean) => {
+        dispatch(commonSlice.actions.toggleParam({
+            param: "isStageCreateOpen",
+            value: val
+        }))
+    }
+
+    const handleCreateUpdateStage = (data: IStageCreate) => {
         dispatch(createStage(data));
-        setNewStageCreating(false);
+
+        handleOpenStageCreate(false);
     }
 
     const sensors = useSensors(
@@ -66,64 +94,158 @@ const Kanban = ({ projectId }: KanbanProps) => {
         })
     );
 
+    let scrollInterval: number | null = null;
+
+    const handleScroll = (direction: "left" | "right") => {
+        const scrollAmount = direction === "right" ? 5 : -5;
+        if (kanbanRef.current) {
+            kanbanRef.current.scrollLeft += scrollAmount;
+
+            // console.log(kanbanRef.current.scrollLeft)
+
+            // const isScrolledLeft = kanbanRef.current.scrollLeft > 0;
+            // // const isScrolledRight = kanbanRef.current.scrollLeft + kanbanRef.current.clientWidth < kanbanRef.current.scrollWidth;
+
+            // console.log(isScrolledToLeft, isScrolledLeft)
+
+            // if (isScrolledToLeft !== isScrolledLeft) {
+            //     setIsScrolledToLeft(isScrolledLeft);
+            // }
+        }
+    };
+
+    const handleMouseEnter = (direction: "left" | "right") => {
+        if (!scrollInterval) {
+            scrollInterval = window.setInterval(() => handleScroll(direction), 20);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        if (scrollInterval) {
+            window.clearInterval(scrollInterval);
+            scrollInterval = null;
+        }
+    };
+
+
+    // useEffect(() => {
+    //     if (kanbanRef.current && stages) {
+    //         setIsScrolledToLeft(kanbanRef.current.scrollLeft > 0);
+    //         setIsScrolledToRight(kanbanRef.current.scrollWidth !== kanbanRef.current.clientWidth);
+    //     }
+    // }, [stages])
+
+    useEffect(() => {
+        if (isStageCreateOpen && kanbanRef.current) {
+            kanbanRef.current.scrollLeft = kanbanRef.current.scrollWidth;
+        }
+    }, [isStageCreateOpen])
+
+
+    if (tasksView === "list") {
+        return (
+            <>
+                <div className={styles.list}>
+                    {tasks.map(task => <TaskBlock view={true} key={task.id} task={task} />)}
+                </div>
+            </>
+
+        );
+    }
+
     if (stages) return (
-        <div className={stages.length > 0 || isNewStageCreating ? styles.kanban : styles.empty}>
-            {stages.length > 0 || isNewStageCreating
-                ? <>
-                    <DndContext
-                        sensors={sensors}
-                        onDragStart={onDragStart}
-                        onDragEnd={onDragEnd}
-                        onDragOver={onDragOver}
-                    >
-                        <SortableContext items={stagesId}>
-                            {stages.map((stage: any) =>
-                                <Stage
-                                    key={stage.id}
-                                    openNewTaskCreate={() => setNewStageCreating(true)}
-                                    stage={stage}
-                                />
-                            )}
-                        </SortableContext>
+        <div className={styles.kanban_wrapper}>
+            {isScrolledToLeft && (
+                <button
+                    onMouseEnter={() => handleMouseEnter("left")}
+                    onMouseLeave={handleMouseLeave}
+                    className={`${styles.scroll} ${styles.to_left}`}
+                >
+                    {"<"}
+                </button>
+            )}
 
-                        {createPortal(
-                            <DragOverlay>
-                                {activeStage && (
+            {isScrolledToRight && (
+                <button
+                    onMouseEnter={() => handleMouseEnter("right")}
+                    onMouseLeave={handleMouseLeave}
+                    className={`${styles.scroll} ${styles.to_right}`}
+                >
+                    {">"}
+                </button>
+            )}
+
+            <div ref={kanbanRef} className={stages.length > 0 || isStageCreateOpen ? styles.kanban : styles.empty}>
+                {stages.length > 0 || isStageCreateOpen
+                    ?
+                    <>
+                        <DndContext
+                            sensors={sensors}
+                            onDragStart={onDragStart}
+                            onDragEnd={onDragEnd}
+                            onDragOver={onDragOver}
+                        >
+                            <SortableContext items={stagesId}>
+                                {stages.map(stage =>
                                     <Stage
-                                        key={activeStage.id}
-                                        openNewTaskCreate={() => setNewStageCreating(true)}
-                                        stage={activeStage}
+                                        key={stage.id}
+                                        stage={stage}
+                                        tasks={tasks}
                                     />
                                 )}
-                                {activeTask && (
-                                    <TaskBlock
-                                        task={activeTask}
-                                        key={activeTask.id}
-                                        view={view}
-                                    />
-                                )}
-                            </DragOverlay>,
-                            document.body
-                        )}
-                    </DndContext>
+                            </SortableContext>
 
-                    {isNewStageCreating && (
-                        <CreateStage create={(data: any) => handleCreateStage({ ...data, project: { id: projectId }, index: stages.length === 0 ? stages.length : stages.length + 1 })} />
-                    )}
-                </>
-                : <>
-                    <div className={styles.text}>
-                        There are no stages yet
-                    </div>
-                    <div className={styles.subtext}>
-                        You need to create one to start managing your goals
-                    </div>
-                    <button onClick={() => setNewStageCreating(true)} className={styles.btn}>
-                        Create one
-                    </button>
-                </>
-            }
+                            {createPortal(
+                                <DragOverlay>
+                                    {activeStage && (
+                                        <Stage
+                                            key={activeStage.id}
+                                            stage={activeStage}
+                                            tasks={tasks}
+                                        />
+                                    )}
+                                    {activeTask && (
+                                        <TaskBlock
+                                            task={activeTask}
+                                            key={activeTask.id}
+                                        />
+                                    )}
+                                </DragOverlay>,
+                                document.body
+                            )}
+                        </DndContext>
+
+                        {isStageCreateOpen && (
+                            <CreateUpdateStage create={(data: any) => handleCreateUpdateStage({ ...data, project: { id: projectId }, index: stages.length === 0 ? stages.length : stages.length + 1 })} />
+                        )}
+                    </>
+                    : <>
+                        <div className={styles.img}>
+                            <img src={empty} alt="" />
+                        </div>
+                        <div className={styles.text}>
+                            There are no stages yet
+                        </div>
+                        <div className={styles.subtext}>
+                            You need to create one to start managing your goals
+                        </div>
+                        <button onClick={() => handleOpenStageCreate(true)} className={styles.btn}>
+                            Create one
+                        </button>
+                    </>
+                }
+            </div>
+
+            <Routes>
+                <Route
+                    path='/details/:id'
+                    element={
+                        <Task />
+                    }
+                />
+            </Routes>
         </div>
+
     )
 
     function onDragStart(event: DragStartEvent) {
@@ -146,33 +268,35 @@ const Kanban = ({ projectId }: KanbanProps) => {
 
         if (!over) return;
 
-        const activeId = active.id;
-        const overId = over.id;
-
-        console.log(over, active)
-
-        // if (activeId === overId) return;
-
         const isActiveAStage = active.data.current?.type === "Stage";
+        const isActiveATask = active.data.current?.type === "Task";
 
-        console.log(isActiveAStage)
+        if (isActiveAStage && projectId) {
+            const stagesToMove = stages.map((stage, index) => {
+                return {
+                    id: stage.id,
+                    index
+                }
+            })
 
-        if (!isActiveAStage) return;
+            dispatch(moveStages(stagesToMove, projectId));
 
-        // const overStageIndex = stages.findIndex((st) => st.id === overId);
+            return;
+        }
 
-        const stagesToMove = stages.map((stage, index) => {
-            return {
-                id: stage.id,
-                index
-            }
-        })
+        if (isActiveATask) {
+            const tasksToMove = tasks.map(task => {
+                return {
+                    id: task.id,
+                    index: task.index,
+                    stage: task.stage
+                }
+            })
 
-        dispatch(moveStages(stagesToMove, projectId));
+            dispatch(moveTasks(tasksToMove))
 
-        // dispatch(projectsSlice.actions.moveStage({ stagesToMove, projectId }));
-
-        // dispatch(taskSlice.actions.updateTask({ id: Number(activeId), index: overStageIndex + 1 }))
+            return;
+        }
     }
 
     function onDragOver(event: DragOverEvent) {
@@ -182,13 +306,8 @@ const Kanban = ({ projectId }: KanbanProps) => {
 
         const activeId = active.id;
         const overId = over.id;
-        // const overStageId = over.data.current?.task.stage.id;
-
-        // console.log(over)
 
         if (activeId === overId) return;
-
-        // console.log(activeId, overId)
 
         const isActiveATask = active.data.current?.type === "Task";
         const isActiveAStage = active.data.current?.type === "Stage";
@@ -198,59 +317,62 @@ const Kanban = ({ projectId }: KanbanProps) => {
 
         if (!isActiveATask && !isActiveAStage) return;
 
-        // console.log("over", over)
-        // console.log("activeTask", activeTask, "isOverATask", isOverATask)
-
         if (isActiveAStage && isOverAStage) {
             setStages((stages) => {
                 const activeIndex = stages.findIndex((s) => s.id === activeId);
                 const overIndex = stages.findIndex((s) => s.id === overId);
 
                 return arrayMove(stages, activeIndex, overIndex);
+
             });
         }
 
-        // Im dropping a Task over another Task
-        // if (isActiveATask && isOverATask) {
-        //     dispatch(projectsSlice.actions.dragTask({
-        //         currentStageId: activeTask?.stage.id,
-        //         overStageId: over.data.current?.task.stage.id,
-        //         overStage: over.data.current?.task.stage,
-        //         activeTask,
-        //         projectId,
-        //     }))
-        // }
 
-        // // Im dropping a Task over a column
+        if (isActiveAStage && isOverATask) {
+            setStages((stages) => {
+                const activeIndex = stages.findIndex((s) => s.id === activeId);
+                const overIndex = stages.findIndex((s) => s.id === over.data.current?.task.stage.id);
 
-        // console.log(isActiveATask && isOverAColumn)
+                return arrayMove(stages, activeIndex, overIndex);
+            });
+        }
+
+        if (isActiveATask && isOverATask) {
+
+            setTasks((tasks) => tasks.map((task) => task.id === activeId
+                ? {
+                    ...task,
+                    stage: over.data.current?.task.stage,
+                    index: over.data.current?.task.index + 1
+                }
+                : task.id !== overId
+                    && task.index >= over.data.current?.task.index
+                    && task.stage.id === over.data.current?.task.stage.id
+                    ? {
+                        ...task,
+                        index: task.index + 1
+                    }
+                    : task
+            ))
+        }
 
         if (isActiveATask && isOverAStage) {
-            // dispatch(projectsSlice.actions.dragTaskToStage({
-            //     currentStageId: activeTask?.stage.id,
-            //     overStageId: over.data.current?.stage.id,
-            //     overStage: over.data.current?.stage,
-            //     activeTask,
-            //     projectId,
-            // }))
+
+            setTasks((tasks) => tasks.map((task) => task.id === activeId
+                ? {
+                    ...task,
+                    stage: over.data.current?.stage,
+                    index: 0
+                }
+                : task.stage.id === over.id
+                    ? {
+                        ...task,
+                        index: task.index + 1
+                    }
+                    : task
+            ))
         }
     }
-    // const tasks = useAppSelector(state => state.taskReducer.tasks);
-
-    // if (view === "list") {
-    //     return (
-    //         <>
-    //             <div className={styles.list}>
-    //                 {tasks.map(task => <TaskBlock view="task_list" key={task.id} title={task.title} id={task.id} />)}
-    //             </div>
-    //         </>
-
-    //     );
-    // }
-
-
-
-
 }
 
 export default Kanban;

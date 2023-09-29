@@ -1,0 +1,116 @@
+@import '@variables'
+
+.comment
+    display: grid
+    grid-template-columns: 32px 1fr
+    gap: 20px
+    align-items: flex-start
+    position: relative
+    &:hover, &.open
+        grid-template-columns: 32px 1fr 40px
+        .options
+            display: block
+    &.editing
+        &:hover
+            grid-template-columns: 32px 1fr
+            .options
+                display: none
+
+.user
+    display: flex
+    flex-direction: column
+    align-items: center
+
+.avatar
+    width: 100%
+    height: 32px
+    border-radius: 50%
+    overflow: hidden
+    display: flex
+    align-items: center
+    justify-content: center
+    img
+        height: 100%
+
+.name
+    color: #323D52
+    text-align: center
+    font-size: 12px
+    line-height: 21px
+
+.date
+    font-size: 12px
+    // opecity: 0.5
+    color: #8C929C
+    font-style: normal
+    font-weight: 400
+    line-height: 12px
+
+.options
+    display: none
+    height: max-content
+    right: 12px
+    position: absolute
+    top: 0
+
+.dots
+    display: flex
+    justify-content: space-between
+    gap: 3px
+    padding: 4px
+    padding-bottom: 16px
+    span
+        width: 4px
+        height: 4px
+        border-radius: 100%
+        background: #000000
+
+.content
+    display: grid
+    grid-template-columns: 1fr
+    gap: 6px
+
+.input
+    width: 100%
+    padding: 12px 15px
+    border-radius: 8px
+    border: 1px solid #E9EBF0
+    background: #FFF
+    overflow: hidden
+    resize: none
+    height: auto
+    &::placeholder
+        color: #C7C9CF
+    &:focus
+        height: auto
+
+.bottom
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+.btns
+    display: flex
+    align-items: center
+    justify-content: flex-end
+    gap: 20px
+    margin-top: 10px
+
+.cancel
+    opacity: 0.5
+    transition: 0.3s
+    max-width: max-content
+    &:hover
+        opacity: 1
+
+.save
+    background-color: $bl
+    color: #fff
+    padding: 8px 20px
+    border-radius: 10px
+
+.error
+    font-size: 12px
+    margin-top: 6px
+    color: #8b0000
+    font-weight: 600

@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 
@@ -26,18 +25,21 @@ const Login = () => {
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const handleSubmit = (data: ILogUser, setSubmitting: Function) => {
-        console.log(data)
-        dispatch(login(data));
-        // setSubmitting(false)
+    const fromPage = location.state?.from || '/tasks';
+
+    const handleSubmit = async (data: ILogUser, setSubmitting: Function) => {
+        const result = await dispatch(login(data));
+
+        if (result) navigate(fromPage);
+
+        setSubmitting(false);
     }
 
-    useEffect(() => {
-        if (isAuth) {
-            navigate('/tasks')
-        }
-    }, [isAuth]);
+    if (isAuth) {
+        return <Navigate to="/tasks/own" />
+    }
 
     return (
         <div className={styles.auth}>

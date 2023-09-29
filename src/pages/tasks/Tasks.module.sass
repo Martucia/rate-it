@@ -1,2 +1,13 @@
 .tasks
     width: 100%
+    // display: grid
+    grid-template-rows: max-content max-content 1fr
+    grid-template-columns: 1fr
+    max-width: 100% !important
+    height: 100%
+
+.wrapper
+    width: 100%
+    max-width: 100% !important
+    padding-top: 30px
+    height: calc(100vh - var(--header-height) - var(--navigation-top-margin) - var(--filter-height) - var(--filter-margin) - var(--navigation-height))

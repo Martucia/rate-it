@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { IProject, IProjectUpdate } from "../../types/project";
-import { ITask } from "../../types/task";
 import { IStage, IStagesUpdate } from "../../types/stage";
 
 type ProjectsState = {
@@ -13,7 +12,7 @@ type ProjectsState = {
 const initialState: ProjectsState = {
     projects: [],
     isLoading: false,
-    error: ""
+    error: "",
 }
 
 export const projectsSlice = createSlice({
@@ -40,7 +39,6 @@ export const projectsSlice = createSlice({
             state.isLoading = false
         },
         updateProject(state, action: PayloadAction<IProjectUpdate>) {
-            console.log(action.payload)
             state.projects = state.projects.map(project => project.id === action.payload.id ? { ...project, ...action.payload } : project);
             state.isLoading = false
         },
@@ -56,19 +54,6 @@ export const projectsSlice = createSlice({
             } else {
                 state.projects = [action.payload]
             }
-        },
-        // TASK SLICES
-        addTask(state, action: PayloadAction<ITask>) {
-            console.log(action.payload)
-            // state.projects = state.projects.map(project =>
-            //     project.id == action.payload.project
-            //         ? {
-            //             ...project, stages: project.stages.map(stage => stage.id == action.payload.stage ? {
-            //                 ...stage, tasks: stage.tasks ? [...stage.tasks, action.payload] : [action.payload]
-            //             } : stage)
-            //         }
-            //         : project
-            // );
             state.isLoading = false;
         },
         // STAGES SLICES
@@ -87,15 +72,40 @@ export const projectsSlice = createSlice({
             action.payload.stagesToMove.forEach(st => {
                 state.projects = state.projects.map(project => project.id === action.payload.projectId
                     ? {
-                        ...project, stages: project.stages.map(stage => stage.id === st.id
+                        ...project,
+                        stages: project.stages.map(stage => stage.id === st.id
                             ? {
                                 ...stage, ...st
                             }
-                            : stage)
+                            : stage
+                        )
                     }
                     : project
                 )
             })
+        },
+        updateStage(state, action: PayloadAction<{ projectId: number, stage: IStagesUpdate }>) {
+            state.projects = state.projects.map(project => project.id === action.payload.projectId
+                ? {
+                    ...project,
+                    stages: project.stages.map(stage => stage.id === action.payload.stage.id
+                        ? {
+                            ...stage, ...action.payload.stage
+                        }
+                        : stage
+                    )
+                }
+                : project
+            )
+        },
+        removeStage(state, action: PayloadAction<{ projectId: number, id: number }>) {
+            state.projects = state.projects.map(project => project.id === action.payload.projectId
+                ? {
+                    ...project,
+                    stages: project.stages.filter(stage => stage.id !== action.payload.id)
+                }
+                : project
+            )
         }
     }
 })

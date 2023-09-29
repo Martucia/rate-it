@@ -3,7 +3,7 @@ export interface IUser {
     firstName: string,
     lastName: string,
     email: string,
-    avatar: string | ImageData | null
+    avatar: string
 }
 
 export interface IRegUser {
@@ -11,10 +11,17 @@ export interface IRegUser {
     lastName: string
     email: string
     password: string
-    avatar: string | ImageData | null
+    // avatar: string | null
 }
 
 export interface ILogUser {
     email: string
     password: string
+}
+
+export interface IParticipant {
+    id: number
+    user: IUser,
+    role: string,
+    status: string
 }

@@ -23,7 +23,7 @@ const sections = [
             {
                 name: "My tasks",
                 image: inboxImg,
-                link: "/tasks/",
+                link: "/tasks/own",
                 count: 4
             },
             {
@@ -55,7 +55,8 @@ const NavMenu = ({ toggle, isOpen }: NavMenuProps) => {
         links: projects.map(project => ({
             name: project.name,
             image: tag,
-            link: `/tasks/?project=${project.id}`
+            link: `/tasks/${project.id}`,
+            id: project.id
         }))
     }
 

@@ -1,5 +1,16 @@
 @import '@variables'
 
+:root
+    --header-height: 80px
+    --navigation-height: 54px
+    --navigation-top-margin: 32px
+    --filter-height: 46px
+    --filter-margin: 30px
+
+// @media (max-width: 1000px)
+//     :root
+//         --header-height: 80px
+
 ::-webkit-scrollbar
     width: 5px
 
@@ -64,25 +75,3 @@ section
     margin: 30px auto 0
     span
         color: rgba(0, 0, 34, 0.75)
-
-.app
-    display: grid
-    grid-template-columns: 260px 1fr
-    background: #F7F8FA
-
-.nav-menu-open
-    grid-template-columns: 260px 1fr
-
-.nav-menu-close
-    grid-template-columns: 100px 1fr
-
-.nav-menu-hidden
-    grid-template-columns: 1fr
-
-.app-wrapper
-    width: 100%
-    background: #F7F8FA
-
-.app-page
-    padding: 36px 30px 0
-    width: 100%

@@ -1,7 +1,14 @@
+@import '@variables'
+    
 .navigation
     display: grid
     align-items: center
     grid-template-columns: max-content 1fr max-content
+    padding: 0 30px
+    max-width: 100%
+    width: 100%
+    height: var(--navigation-height)
+    margin-top: var(--navigation-top-margin)
 
 .nav
     display: flex
@@ -16,19 +23,22 @@
     line-height: 20px
     padding: 8px 0
     &:hover
-        color: #3B82F6
-        border-bottom: 1px solid #3B82F6
+        color: $bl
+        border-bottom: 1px solid $bl
     &.active
-        color: #3B82F6
-        border-bottom: 1px solid #3B82F6
+        color: $bl
+        border-bottom: 1px solid $bl
 
 .filter
     display: flex
     align-items: center
     justify-content: space-between
     gap: 30px
-    margin-top: 30px
-    margin-bottom: 50px
+    margin-top: var(--filter-margin)
+    padding: 0 30px
+    max-width: 100%
+    width: 100%
+    height: var(--filter-height)
 
 .views
     display: flex

@@ -17,7 +17,8 @@ import { userSlice } from '../../store/reducers/userSlice';
 const Header = () => {
     const [isOpen, setOpen] = useState(false);
 
-    const firstName = useAppSelector(state => state.userReducer.user?.firstName)
+    const firstName = useAppSelector(state => state.userReducer.user?.firstName);
+    const avatar = useAppSelector(state => state.userReducer.user?.avatar);
 
     const dots = useRef<HTMLDivElement | null>(null);
     const dispatch = useAppDispatch();
@@ -28,7 +29,7 @@ const Header = () => {
 
     return (
         <header className={styles.header}>
-            <SearchInput paddingY={14} />
+            <SearchInput paddingY={8} />
 
             <nav className={styles.nav}>
                 <NavLink to="/tasks" className={setClass}>
@@ -57,7 +58,7 @@ const Header = () => {
                 </button>
 
                 <div ref={dots} onClick={() => setOpen(prev => !prev)} className={styles.user}>
-                    <Avatar percentage={10} size={40} />
+                    <Avatar avatar={avatar} notifications={9} percentage={10} size={40} />
 
                     {firstName}
 

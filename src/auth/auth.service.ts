@@ -31,19 +31,6 @@ export class AuthService {
     async login(user: IUser) {
         delete user.password;
 
-        // const projects = user.projects.map(project => project.stages ? project : {
-        //     ...project,
-        //     stages: []
-        // });
-
-
-
-        // delete user.projects;
-
-        // return {
-        //     user, projects, token: this.jwtService.sign({ id: user.id, email: user.email })
-        // }
-
         return {
             user, token: this.jwtService.sign({ id: user.id, email: user.email })
         }

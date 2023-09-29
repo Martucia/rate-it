@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateStageDto } from './dto/create-stage.dto';
 import { UpdateStageDto } from './dto/update-stage.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -60,8 +60,7 @@ export class StagesService {
         throw new NotFoundException("No stage with this id was found");
       }
 
-      const updated = await this.stagesRepository.save({ ...st, ...stage });
-
+      await this.stagesRepository.save({ ...st, ...stage });
     })
 
     return {
@@ -78,8 +77,14 @@ export class StagesService {
       throw new NotFoundException("No stage with this id was found");
     }
 
-    return {
-      message: "Stage was successfully removed"
-    };
+    try {
+      await this.stagesRepository.remove(stage);
+
+      return {
+        message: "Stage was successfully removed"
+      };
+    } catch (error) {
+      throw new InternalServerErrorException("Error while removing the stage");
+    }
   }
 }

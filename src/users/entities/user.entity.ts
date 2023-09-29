@@ -1,4 +1,4 @@
-import { Project } from "src/projects/entities/project.entity";
+import { Participant } from "src/projects/entities/participant.entity";
 import { Task } from "src/tasks/entities/task.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -16,7 +16,10 @@ export class User {
     @Column()
     lastName: string
 
-    @Column()
+    @Column({ default: 'user.png' })
+    avatar: string
+
+    @Column({ select: false })
     password: string
 
     @CreateDateColumn()
@@ -25,12 +28,15 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date
 
-    @ManyToMany(() => Project, (project) => project.participants)
-    @JoinTable()
-    projects: Project & { notification: unknown }[]
+    @OneToMany(() => Participant, (participant) => participant.user)
+    participants: Participant[]
+
+    // @ManyToMany(() => Project, (project) => project.participants)
+    // @JoinTable()
+    // projects: Project[] //  & { notification: unknown }
 
     @ManyToMany(() => Task, (task) => task.responsible)
     @JoinTable()
-    tasks: Task & { ownStage: number }[];
+    tasks: Task[] //& { ownStage: number }
 }
 

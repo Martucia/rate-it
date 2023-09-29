@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -7,51 +7,53 @@ import { Repository } from 'typeorm';
 import { Task } from './entities/task.entity';
 import { IUser } from 'src/types/types';
 import { User } from 'src/users/entities/user.entity';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectRepository(Task) private readonly tasksRepository: Repository<Task>,
+    @InjectRepository(Task)
+    private readonly tasksRepository: Repository<Task>,
+    private readonly commentsService: CommentsService
   ) { }
 
-  async create(createTaskDto: CreateTaskDto, user: User) {
+  async create(dto: CreateTaskDto, user: User) {
     const tasksToUpdate = await this.tasksRepository
       .createQueryBuilder('task')
-      .where('task.project = :projectId', { projectId: createTaskDto.project })
-      .andWhere('task.stage = :stageId', { stageId: createTaskDto.stage })
+      .where('task.project = :projectId', { projectId: dto.project })
+      .andWhere('task.stage = :stageId', { stageId: dto.stage })
       .getMany();
-
-    console.log(tasksToUpdate)
 
     for (const task of tasksToUpdate) {
       task.index += 1;
     }
 
     const newTask = this.tasksRepository.create({
-      ...createTaskDto,
-      reporter: user,
+      ...dto,
+      reporter: { id: user.id },
       index: 0
     });
 
     const savedTasks = await this.tasksRepository.save([newTask, ...tasksToUpdate]);
 
-    const newTaskWithRelations = await this.tasksRepository
-      .createQueryBuilder('task')
-      .where('task.id = :taskId', { taskId: savedTasks[0].id })
-      .leftJoinAndSelect('task.project', 'project')
-      .leftJoinAndSelect('task.stage', 'stage')
-      .getOne();
+    const task = await this.findOne(savedTasks[0].id);
 
-    return newTaskWithRelations;
+    return task;
   }
 
   async findAll(user: User, projectId: number) {
-    const tasks = await this.tasksRepository
-      .createQueryBuilder('task')
-      .leftJoin('task.project', 'project')
-      .leftJoinAndSelect('task.stage', 'stages')
-      .where('project.id = :projectId', { projectId })
-      .getMany();
+    const tasks = await this.tasksRepository.find({
+      relations: {
+        responsible: true,
+        reporter: true,
+        stage: true,
+        comments: {
+          user: true
+        },
+        childTasks: true,
+        parentTask: true
+      }
+    });
 
     return tasks;
   }
@@ -61,11 +63,22 @@ export class TasksService {
       where: {
         id
       },
+      relations: {
+        responsible: true,
+        reporter: true,
+        stage: true,
+        childTasks: true,
+        parentTask: true
+      },
     });
 
     if (!task) {
       throw new NotFoundException("No task with this id was found");
     }
+
+    const comments = await this.commentsService.findAll(task.id);
+
+    task.comments = comments;
 
     return task;
   }
@@ -84,6 +97,25 @@ export class TasksService {
     return updatedTask;
   }
 
+  async move(updateTaskDto: UpdateTaskDto[]) {
+
+    updateTaskDto.forEach(async task => {
+      const ts = await this.tasksRepository.findOne({
+        where: { id: task.id }
+      });
+
+      if (!ts) {
+        throw new NotFoundException("No task with this id was found");
+      }
+
+      await this.tasksRepository.save({ ...ts, ...task });
+    })
+
+    return {
+      message: "Task was successfully moved"
+    };;
+  }
+
   async remove(id: number) {
     let task = await this.tasksRepository.findOne({
       where: { id }
@@ -93,8 +125,14 @@ export class TasksService {
       throw new NotFoundException("No task with this id was found");
     }
 
-    return {
-      message: "Task was successfully removed"
-    };
+    try {
+      await this.tasksRepository.remove(task);
+
+      return {
+        message: "Task was successfully removed"
+      };
+    } catch (error) {
+      throw new InternalServerErrorException("Error while removing the task");
+    }
   }
 }

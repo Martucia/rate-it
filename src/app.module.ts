@@ -10,6 +10,8 @@ import { TagsModule } from './tags/tags.module';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { StagesModule } from './stages/stages.module';
+import { FileController } from './file/file.controller';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -40,8 +42,9 @@ import { StagesModule } from './stages/stages.module';
       limit: 15,
     }]),
     StagesModule,
+    CommentsModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, FileController],
   providers: [AppService],
 })
 export class AppModule { }

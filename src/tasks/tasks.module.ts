@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity';
-import { ProjectsService } from 'src/projects/projects.service';
+import { CommentsModule } from 'src/comments/comments.module';
 
 @Module({
   imports: [
@@ -17,7 +17,8 @@ import { ProjectsService } from 'src/projects/projects.service';
         signOptions: { expiresIn: '30d' }
       }),
       inject: [ConfigService]
-    })
+    }),
+    CommentsModule
   ],
   controllers: [TasksController],
   providers: [TasksService],

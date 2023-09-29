@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, UsePipes, ValidationPipe, UseInterceptors } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('tasks')
 export class TasksController {
@@ -15,18 +16,26 @@ export class TasksController {
     return this.tasksService.create(createTaskDto, req.user);
   }
 
-  @Get(':projectId')
+  @Get('all/:projectId')
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   findAll(@Param('projectId') projectId: number | null, @Request() req) {
     return this.tasksService.findAll(req.user, +projectId);
   }
 
   @Get(':id')
+  @SkipThrottle()
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('/move')
+  @SkipThrottle()
+  move(@Body() updateTaskDto: UpdateTaskDto[]) {
+    return this.tasksService.move(updateTaskDto)
+  }
+
+  @Patch('/:id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(+id, updateTaskDto);
   }

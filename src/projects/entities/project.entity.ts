@@ -1,7 +1,9 @@
+
 import { Stage } from "src/stages/entities/stage.entity";
 import { Task } from "src/tasks/entities/task.entity";
-import { User } from "src/users/entities/user.entity";
+// import { User } from "src/users/entities/user.entity";
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Participant } from "./participant.entity";
 
 @Entity()
 export class Project {
@@ -17,15 +19,14 @@ export class Project {
     @UpdateDateColumn()
     updatedAt: Date
 
-    @OneToMany(() => Task, (task) => task.project)
+    @OneToMany(() => Task, (task) => task.project, { onDelete: 'CASCADE' })
     @JoinTable()
     tasks: Task[]
 
-    @ManyToMany(() => User, (user) => user.projects)
-    @JoinTable()
-    participants: User[]
-
+    @OneToMany(() => Participant, (participant) => participant.project, { onDelete: 'CASCADE' })
+    participants: Participant[]
+    
     @OneToMany(() => Stage, (stage) => stage.project, { onDelete: 'CASCADE' })
-    @JoinTable()
+    // @JoinTable()
     stages: Stage[]
 }

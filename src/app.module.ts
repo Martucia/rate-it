@@ -12,6 +12,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { StagesModule } from './stages/stages.module';
 import { FileController } from './file/file.controller';
 import { CommentsModule } from './comments/comments.module';
+import { FileModule } from './file/file.module';
+import { MailModule } from './mail/mail.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -42,7 +45,10 @@ import { CommentsModule } from './comments/comments.module';
       limit: 15,
     }]),
     StagesModule,
-    CommentsModule
+    CommentsModule,
+    FileModule,
+    MailModule,
+    NotificationsModule,
   ],
   controllers: [AppController, FileController],
   providers: [AppService],

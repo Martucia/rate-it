@@ -1,5 +1,6 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { Project } from "src/projects/entities/project.entity";
+import { User } from "src/users/entities/user.entity";
 
 export class CreateStageDto {
     @IsNotEmpty()
@@ -12,8 +13,9 @@ export class CreateStageDto {
     background: string
 
     @IsNotEmpty()
-    projectId: number
+    project: Project
 
-    @IsNotEmpty()
-    index: number
+
+    // @IsNotEmpty()
+    // index: number
 }

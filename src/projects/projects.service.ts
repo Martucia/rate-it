@@ -6,6 +6,7 @@ import { Project } from './entities/project.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Participant } from './entities/participant.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class ProjectsService {
@@ -13,13 +14,14 @@ export class ProjectsService {
     @InjectRepository(Project)
     private readonly projectsRepository: Repository<Project>,
     @InjectRepository(Participant)
-    private readonly participantsRepository: Repository<Participant>
+    private readonly participantsRepository: Repository<Participant>,
+    private readonly mailService: MailService
   ) { }
 
-  async create(createProjectDto: CreateProjectDto, user: User) {
+  async create(dto: CreateProjectDto, user: User) {
 
     const project = await this.projectsRepository.save({
-      ...createProjectDto,
+      ...dto,
       stages: [],
       participants: []
     })
@@ -39,42 +41,29 @@ export class ProjectsService {
   }
 
   async findAll(user: User) {
-    // const projects = await this.projectsRepository
-    //   .createQueryBuilder('project')
-    //   // .innerJoin('project.participants', 'participants')
-    //   // .innerJoin('participants.user', 'user')
-    //   // .where('user.id = :userId', { userId: user.id })
-    //   // .leftJoinAndSelect('project.tasks', 'tasks')
-    //   // .leftJoinAndSelect('project.stages', 'stages')
-    //   .leftJoinAndSelect('project.participants', 'participants')
-    //   .leftJoinAndSelect('participants.user', 'user')
-    //   .getMany();
-
     const projects = await this.projectsRepository.find({
       where: {
         participants: [{
           user: { id: user.id }
         }]
       },
-      relations: ['participants', 'stages', 'participants.user']
+      relations: ['participants', 'stages', 'participants.user', 'tags']
     });
 
-    return projects;
+    const projectsOut = projects.map(pr => ({
+      ...pr,
+      downloadedTask: 'none'
+    }))
+
+    return projectsOut;
   }
 
   async findOne(id: number) {
     const project = await this.projectsRepository.findOne({
       where: {
         id
-      },
-      // relations: {
-      //   participants: {
-      //     user: true
-      //   }
-      // }
+      }
     });
-
-    //['participants', 'stages']
 
     if (!project) {
       throw new NotFoundException("No project with this id was found");
@@ -83,8 +72,32 @@ export class ProjectsService {
     return project;
   }
 
-  async update(id: number, updateProjectDto: UpdateProjectDto) {
-    let project = await this.projectsRepository.findOne({
+  async invite(id: number, participants: Participant[]) {
+    const project = await this.projectsRepository.findOne({
+      where: { id },
+      relations: { participants: true }
+    })
+
+    if (!project) {
+      throw new NotFoundException("No project with this id was found");
+    }
+
+    const result = await this.mailService.sendMail({
+      to: "shlapak.marta@gmail.com",
+      subject: "Testing Nest MailerModule ✔",
+      text: "Helouka",
+      from: "imarta.shlapak@gmail.com"
+    })
+
+    console.log("result", result)
+
+    return {
+      message: "Lol"
+    }
+  }
+
+  async update(id: number, dto: UpdateProjectDto) {
+    const project = await this.projectsRepository.findOne({
       where: { id },
       // relations: { participants: true }
     });
@@ -95,7 +108,7 @@ export class ProjectsService {
 
     // const newParticipants = project.participants.find(participant => updateProjectDto.participants.find(user => user.id))
 
-    const updatedProject = await this.projectsRepository.save({ ...project, ...updateProjectDto });
+    const updatedProject = await this.projectsRepository.save({ ...project, ...dto });
 
     return updatedProject;
   }

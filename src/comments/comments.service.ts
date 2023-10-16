@@ -4,33 +4,42 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './entities/comment.entity';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class CommentsService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentsRepository: Repository<Comment>,
+    private readonly fileService: FileService
   ) { }
 
-  async create(dto: CreateCommentDto, userId: number) {
+  async create(dto: CreateCommentDto, userId: number, files?: Express.Multer.File[]) {
 
-    // console.log(dto)
+    if (files && files.length > 0) {
+      const uploadedFiles = await this.fileService.uploadFiles(files);
+
+      dto.files = uploadedFiles;
+    }
+
+    const data = JSON.parse(dto.comment);
+
+    // const data = dto.comment;
 
     const commentToSave = this.commentsRepository.create({
-      text: dto.text,
+      text: data.text,
       user: {
         id: userId
       },
       task: {
-        id: dto.task.id
-      }
+        id: data.task.id
+      },
+      files: dto.files
     });
 
     const savedComment = await this.commentsRepository.save(commentToSave);
 
     const comment = await this.findOne(savedComment.id);
-
-    console.log(comment)
 
     return comment;
   }
@@ -64,7 +73,8 @@ export class CommentsService {
     return comment;
   }
 
-  async update(id: number, updateCommentDto: UpdateCommentDto) {
+  async update(id: number, dto: UpdateCommentDto, files?: Express.Multer.File[]) {
+
     let commentToUpdate = await this.commentsRepository.findOne({
       where: { id }
     });
@@ -73,7 +83,19 @@ export class CommentsService {
       throw new NotFoundException("No comment with this id was found");
     }
 
-    const updatedComment = await this.commentsRepository.save({ ...commentToUpdate, ...updateCommentDto });
+    let uploadedFiles = [];
+
+    if (files && files.length > 0) {
+      uploadedFiles = await this.fileService.uploadFiles(files);
+    }
+
+    const updates = JSON.parse(dto.comment);
+
+    // const updates = dto;
+
+    updates.files = [...uploadedFiles, ...updates.files]
+
+    const updatedComment = await this.commentsRepository.save({ ...commentToUpdate, ...updates });
 
     const comment = await this.commentsRepository.findOne({
       where: { id: updatedComment.id },

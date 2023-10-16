@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { Participant } from './entities/participant.entity';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { Participant } from './entities/participant.entity';
         signOptions: { expiresIn: '30d' }
       }),
       inject: [ConfigService]
-    })
+    }),
+    MailModule
   ],
   controllers: [ProjectsController],
   providers: [ProjectsService]

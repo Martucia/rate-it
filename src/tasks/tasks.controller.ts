@@ -19,28 +19,35 @@ export class TasksController {
   @Get('all/:projectId')
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
-  findAll(@Param('projectId') projectId: number | null, @Request() req) {
-    return this.tasksService.findAll(req.user, +projectId);
+  findAll(
+    @Param('projectId') projectId: number | null,
+    // @Request() req
+  ) {
+    return this.tasksService.findAll(+projectId); // req.user.id, 
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @SkipThrottle()
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(+id);
   }
 
   @Patch('/move')
+  @UseGuards(JwtAuthGuard)
   @SkipThrottle()
   move(@Body() updateTaskDto: UpdateTaskDto[]) {
     return this.tasksService.move(updateTaskDto)
   }
 
   @Patch('/:id')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(+id, updateTaskDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.tasksService.remove(+id);
   }

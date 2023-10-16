@@ -19,4 +19,7 @@ export class Comment {
 
     @ManyToOne(() => Task, (stage) => stage.comments, { onDelete: 'CASCADE' })
     task: Task
+
+    @Column('text', { array: true, default: [] })
+    files: string[]
 }

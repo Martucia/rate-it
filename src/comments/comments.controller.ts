@@ -1,8 +1,10 @@
-import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
+
 
 @Controller('comments')
 export class CommentsController {
@@ -10,9 +12,14 @@ export class CommentsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe())
-  create(@Body() createCommentDto: CreateCommentDto, @Request() req) {
-    return this.commentsService.create(createCommentDto, req.user.id);
+  // @UsePipes(new ValidationPipe())
+  @UseInterceptors(FilesInterceptor('files'))
+  create(
+    @Body() dto: CreateCommentDto,
+    @Request() req,
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
+    return this.commentsService.create(dto, req.user.id, files);
   }
 
   @Get('/all/:taskId')
@@ -26,8 +33,13 @@ export class CommentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
+  @UseInterceptors(FilesInterceptor('files'))
+  update(
+    @Param('id') id: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
+    return this.commentsService.update(+id, updateCommentDto, files);
   }
 
   @Delete(':id')

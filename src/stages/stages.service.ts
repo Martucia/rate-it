@@ -11,8 +11,21 @@ export class StagesService {
     @InjectRepository(Stage) private readonly stagesRepository: Repository<Stage>,
   ) { }
 
-  async create(createStageDto: CreateStageDto) {
-    const stage = await this.stagesRepository.save(createStageDto);
+  async create(dto: CreateStageDto) {
+    const stages = await this.stagesRepository.find({
+      where: {
+        project: { id: dto.project.id }
+      }
+    })
+
+
+    if (!stages) {
+      throw new InternalServerErrorException("Error while creating the stage");
+    };
+
+    const index = stages.length > 0 ? stages.length + 1 : 0;
+
+    const stage = await this.stagesRepository.save({ ...dto, index });
 
     return stage;
   }

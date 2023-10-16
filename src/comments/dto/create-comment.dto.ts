@@ -1,11 +1,40 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
+
+// export class CreateCommentDto {
+//     @IsNotEmpty()
+//     text: string
+
+//     @IsNotEmpty()
+//     task: {
+//         id: number
+//     }
+
+//     @IsOptional()
+//     files?: string[]
+// }
+
+
+// export class CreateCommentDto {
+//     comment: {
+//         text: string
+
+//         task: {
+//             id: number
+//         }
+//     }
+
+//     files?: string[]
+// }
 
 export class CreateCommentDto {
-    @IsNotEmpty()
-    text: string
+    comment: string
 
-    @IsNotEmpty()
-    task: {
-        id: number
-    }
+    // comment: {
+    //     text: string,
+    //     task: {
+    //         id: number
+    //     }
+    // }
+
+    files?: string[]
 }

@@ -41,21 +41,53 @@ export class TasksService {
     return task;
   }
 
-  async findAll(user: User, projectId: number) {
+  async findAll(projectId: number) {
+    // const tasks = await this.tasksRepository.find({
+    //   where: {
+    //     project: {
+    //       id: projectId
+    //     }
+    //   },
+    //   relations: {
+    //     responsible: true,
+    //     reporter: true,
+    //     stage: true,
+    //     comments: {
+    //       user: true
+    //     },
+    //     childTasks: true,
+    //     parentTask: true
+    //   }
+    // });
+
     const tasks = await this.tasksRepository.find({
+      where: {
+        project: {
+          id: projectId
+        }
+      },
       relations: {
         responsible: true,
-        reporter: true,
         stage: true,
-        comments: {
-          user: true
-        },
-        childTasks: true,
-        parentTask: true
-      }
+        tags: true
+      },
+      select: [
+        'index',
+        'title',
+        'deadline',
+        'responsible',
+        'stage',
+        'id',
+        'tags'
+      ]
     });
 
-    return tasks;
+    const tasksOut = tasks.map(task => ({
+      ...task,
+      downloadedTask: 'simple'
+    }))
+
+    return tasksOut;
   }
 
   async findOne(id: number) {
@@ -68,7 +100,8 @@ export class TasksService {
         reporter: true,
         stage: true,
         childTasks: true,
-        parentTask: true
+        parentTask: true,
+        tags: true
       },
     });
 
@@ -80,21 +113,28 @@ export class TasksService {
 
     task.comments = comments;
 
-    return task;
+    const taskOut = {
+      ...task,
+      downloadedTask: "full"
+    }
+
+    return taskOut;
   }
 
-  async update(id: number, updateTaskDto: UpdateTaskDto) {
-    let task = await this.tasksRepository.findOne({
+  async update(id: number, dto: UpdateTaskDto) {
+    let taskToUpdate = await this.tasksRepository.findOne({
       where: { id }
     });
 
-    if (!task) {
+    if (!taskToUpdate) {
       throw new NotFoundException("No task with this id was found");
     }
 
-    const updatedTask = await this.tasksRepository.save({ ...task, ...updateTaskDto });
+    await this.tasksRepository.save({ ...taskToUpdate, ...dto });
 
-    return updatedTask;
+    const task = await this.findOne(taskToUpdate.id);
+
+    return task;
   }
 
   async move(updateTaskDto: UpdateTaskDto[]) {

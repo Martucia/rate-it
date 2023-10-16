@@ -4,6 +4,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { Participant } from './entities/participant.entity';
 
 @Controller('projects')
 export class ProjectsController {
@@ -27,6 +28,15 @@ export class ProjectsController {
   @SkipThrottle()
   findOne(@Param('id') id: string) {
     return this.projectsService.findOne(+id || null);
+  }
+
+  @Patch('/invite/:id')
+  @SkipThrottle()
+  invite(
+    @Param('id') id: string,
+    @Body() dto: Participant[]
+  ) {
+    return this.projectsService.invite(+id, dto);
   }
 
   @Patch(':id')

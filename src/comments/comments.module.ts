@@ -5,9 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { FileModule } from 'src/file/file.module';
+import { CommentsGateway } from './comments.gateway';
 
 @Module({
   imports: [
+    FileModule,
     TypeOrmModule.forFeature([Comment]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -19,7 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     })
   ],
   controllers: [CommentsController],
-  providers: [CommentsService],
+  providers: [CommentsService, CommentsGateway],
   exports: [CommentsService]
 })
 export class CommentsModule { }

@@ -1,65 +1,51 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
+
 import { BASE_URL } from '../../../utils/constants';
-import { formatDateAndTime } from '../../../utils/functions';
+import { useFormattedDate, zoomPage } from '../../../utils/functions';
+import { IComment } from '../../../types/comment';
+
+import CommentPopup from '../../popups/commentPopup/CommentPopup';
+import CommentInput from '../commentInput.tsx/CommentInput';
+
+import { useAppDispatch, useAppSelector } from '../../../actions/redux';
 
 import styles from './Comment.module.sass';
-import CommentPopup from '../../popups/commentPopup/CommentPopup';
-import { useAppDispatch } from '../../../actions/redux';
-import { updateComment } from '../../../actions/comments';
+
+// import download from '@images/download.svg'
 
 interface CommentProps {
-    id: number,
-    firstName: string,
-    avatar: string,
-    text: string,
-    createdAt: Date
+    comment: IComment,
+    isEditing: boolean,
+    setEditing: React.Dispatch<React.SetStateAction<number | null>>
 }
 
-const Comment = ({ id, firstName, avatar, text, createdAt }: CommentProps) => {
+const Comment: FC<CommentProps> = ({ comment, isEditing, setEditing }) => {
     const [isPopupOpen, setPopupOpen] = useState(false);
-    const [isEditing, setEditing] = useState(false);
-    const [value, setValue] = useState(text);
-    const [error, setError] = useState('');
 
     const dispatch = useAppDispatch();
+    const user = useAppSelector(state => state.userReducer.user)
+
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
-    const textOut = text.split('\n').map((line, index) => (
+    const textOut = comment.text.split('\n').map((line, index) => (
         <React.Fragment key={index}>
             {line}
             <br />
         </React.Fragment>
     ));
 
-    const handleCancelEdit = () => {
-        setValue(text);
-        setEditing(false);
+    // const handleCancelEdit = () => {
+    //     setValue(comment.text);
+    //     setEditing(null);
+    // }
+
+    const handleZoom = (src: string) => {
+        dispatch(zoomPage(src));
     }
-
-    const handleSave = async () => {
-        if (value.length === 0) {
-            setError("Your comment must not be empty");
-            return;
-        }
-
-        const response = await dispatch(updateComment({
-            id,
-            text: value.trim()
-        }));
-
-        if (response) {
-            setEditing(false);
-        }
-    }
-
-    const autoResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        e.target.style.height = 'auto';
-        e.target.style.height = e.target.scrollHeight + 'px';
-    };
 
     const handleSetEdit = () => {
         setPopupOpen(false);
-        setEditing(true);
+        setEditing(comment.id);
     }
 
     useEffect(() => {
@@ -68,59 +54,51 @@ const Comment = ({ id, firstName, avatar, text, createdAt }: CommentProps) => {
         }
     }, [isEditing])
 
+    const createdAt = useFormattedDate(comment.createdAt);
+
+    if (isEditing) {
+        return (
+            <CommentInput
+                comment={comment}
+                closeEditing={() => setEditing(null)}
+            />
+        )
+    }
 
     return (
         <div className={`${styles.comment} ${isPopupOpen && styles.open} ${isEditing && styles.editing}`}>
             <div className={styles.user}>
                 <div className={styles.avatar}>
-                    <img src={`${BASE_URL}/file/${avatar}`} alt="avatar" />
+                    <img src={`${BASE_URL}/file/${comment.user.avatar}`} alt="avatar" />
                 </div>
                 <span className={styles.name}>
-                    {firstName}
+                    {comment.user.firstName}
                 </span>
             </div>
-            {isEditing
-                ? <div className={styles.content}>
-                    <textarea
-                        ref={inputRef}
-                        value={value}
-                        onChange={(e: any) => setValue(e.target.value)}
-                        onInput={autoResize}
-                        onFocus={autoResize}
-                        className={styles.input}
-                        placeholder='Add a comment...'
-                        onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                            if (e.key == 'Enter' && !e.shiftKey) {
-                                e.preventDefault();
-                                handleSave();
-                            }
-                        }}
-                    />
-                    <div className={styles.bottom}>
-                        <div className={styles.error}>
-                            {error}
-                        </div>
 
-                        <div className={styles.btns}>
-                            <button className={styles.cancel} onClick={handleCancelEdit}>
-                                Cancel
-                            </button>
-                            <button className={styles.save} onClick={handleSave}>
-                                Save
-                            </button>
-                        </div>
+            <div className={styles.content}>
+                <div className={styles.text}>
+                    {textOut}
+                </div>
+                {comment.files.length > 0 &&
+                    <div className={`${comment.files.length === 1 ? styles.attaches : styles.attaches_list}`}>
+                        {comment.files.map(attach =>
+                            <div className={styles.attach} key={attach}>
+                                {/* <button className={styles.attach_btn}>
+                                    <img src={download} alt="download" />
+                                </button> */}
+                                <div className={styles.attach_image} onClick={() => handleZoom(attach)}>
+                                    <img src={`${BASE_URL}/file/${attach}`} alt="avatar" />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                }
 
-                    </div>
+                <div className={styles.date}>
+                    {createdAt}
                 </div>
-                : <div className={styles.content}>
-                    <div className={styles.text}>
-                        {textOut}
-                    </div>
-                    <div className={styles.date}>
-                        {formatDateAndTime(createdAt)}
-                    </div>
-                </div>
-            }
+            </div>
 
             <div className={styles.options}>
                 <button className={styles.dots} onClick={() => setPopupOpen(true)}>
@@ -130,8 +108,10 @@ const Comment = ({ id, firstName, avatar, text, createdAt }: CommentProps) => {
                 </button>
                 {isPopupOpen && <CommentPopup
                     close={() => setPopupOpen(false)}
-                    id={id}
+                    id={comment.id}
+                    isOwner={user?.id === comment.user.id}
                     setEdit={handleSetEdit}
+                    text={comment.text}
                 />}
             </div>
 

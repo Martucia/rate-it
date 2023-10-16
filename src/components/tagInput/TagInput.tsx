@@ -6,11 +6,13 @@ import x from '@images/x.svg'
 import { useAppSelector } from '../../actions/redux';
 
 interface TagInputProps {
-    users: IParticipant[],
-    setUsers: Function
+    // users: IParticipant[],
+    users: { email: string }[] // | IParticipant[]
+    setUsers: Function,
+    check: (email: string) => boolean
 }
 
-const TagInput = ({ users, setUsers }: TagInputProps) => {
+const TagInput = ({ users, setUsers, check }: TagInputProps) => {
     const [value, setValue] = useState("");
     const [error, setError] = useState("");
 
@@ -18,24 +20,30 @@ const TagInput = ({ users, setUsers }: TagInputProps) => {
 
     const handleChangeValue = (e: any) => {
         setValue(e.target.value);
-        setError("")
+        setError("");
     }
 
     const handleRemoveUser = (email: string) => {
-        setUsers((prev: IParticipant[]) => prev.filter(pr => pr.user.email !== email));
+        setUsers((prev: { email: string }[]) => prev.filter(pr => pr.email !== email));
     }
 
     const handlePressEnter = async (e: any) => {
         if (e.key === "Enter" && value.length !== 0) {
+            const trimValue = value.trim();
+
             const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-            const isExist = users.find(user => user.user.email === value.trim())
+
+            const isExist = check(trimValue);
+            const isAdded = users.find(user => user.email === trimValue)
 
             if (isExist) {
                 setError("This email already invited");
-            } else if (!emailRegex.test(value)) {
+            } else if (isAdded) {
+                setError("This email already added");
+            } else if (!emailRegex.test(trimValue)) {
                 setError("It's not an email");
             } else {
-                setUsers((prev: string[]) => ([...prev, { email: value.trim(), status: "added" }]));
+                setUsers((prev: IParticipant[]) => ([...prev, { email: trimValue }]));
                 setValue("");
             }
         }
@@ -45,18 +53,18 @@ const TagInput = ({ users, setUsers }: TagInputProps) => {
         <>
             <div className={styles.container}>
                 {users.map(user => (
-                    <div className={`${styles.user} ${styles[user.status]}`} key={user.user.id}>
-                        {user.user.avatar && (
+                    <div className={styles.user} key={user.email}>
+                        {/* {user.user?.avatar && (
                             <div className={styles.avatar}>
                                 <img src={`${BASE_URL}/file/${user.user.avatar}`} alt="" />
                             </div>
-                        )}
-                        <span className={styles.text}>{user.user.email}</span>
-                        {id !== user.id && (
-                            <button onClick={() => handleRemoveUser(user.user.email)} className={styles.remove}>
-                                <img src={x} alt="" />
-                            </button>
-                        )}
+                        )} */}
+                        <span className={styles.text}>{user.email}</span>
+                        {/* {id !== user.id && ( */}
+                        <button onClick={() => handleRemoveUser(user.email)} className={styles.remove}>
+                            <img src={x} alt="" />
+                        </button>
+                        {/* )} */}
 
                     </div>
                 ))}

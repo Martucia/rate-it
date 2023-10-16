@@ -1,16 +1,16 @@
 import { IStage } from "./stage"
-// import { ITask } from "./task"
-import { IParticipant, IUser } from "./user"
+import { ITag } from "./tag"
+import { IParticipant } from "./user"
 
 export interface IProject {
     id: number
     name: string
     createdAt: Date,
     updatedAt: Date,
-    // tasks: ITask[],
     participants: IParticipant[],
     stages: IStage[],
-    downloadedTask: 'all' | 'one' | 'none'
+    downloadedTasks: 'all' | 'one' | 'none',
+    tags: ITag[]
 }
 
 export interface IProjectCreate {

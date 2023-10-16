@@ -30,12 +30,10 @@ const CreateProject = () => {
         }))
     }
 
-    console.log(isLoading)
-
     const handleCreateProject = async () => {
         let id = await dispatch(createProject({ name }));
 
-        navigate('/tasks/' + id);
+        navigate('/project/' + id);
     }
 
     return (

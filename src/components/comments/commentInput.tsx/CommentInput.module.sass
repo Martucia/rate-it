@@ -1,11 +1,9 @@
 @import '@variables'
-    
+
 .block
     display: grid
     grid-template-columns: 32px 1fr
-    align-items: center
     gap: 20px
-    margin-top: 30px
 
 .open_block
     display: grid
@@ -15,8 +13,6 @@
     border: 1px solid #E9EBF0
     border-radius: 8px
     padding: 24px
-    .avatar
-        display: none
     .input
         border: none
         padding: 0
@@ -47,6 +43,7 @@
     overflow: hidden
     resize: none
     height: auto
+    margin-bottom: 8px
     &::placeholder
         color: #C7C9CF
     &:focus
@@ -56,11 +53,13 @@
     display: flex
     align-items: center
     justify-content: space-between
+    margin-top: 24px
 
 .btns
     display: flex
     align-items: center
     gap: 20px
+    position: relative
 
 .btn
     width: 18px

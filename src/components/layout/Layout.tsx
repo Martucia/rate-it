@@ -4,6 +4,7 @@ import Header from '../header/Header';
 import NavMenu from '../navMenu/NavMenu';
 import { useState } from 'react';
 import { useAppSelector } from '../../actions/redux';
+import ZoomPage from '../zoomImage/ZoomPage';
 
 // interface LayoutProps {
 //     children: ReactNode;
@@ -11,14 +12,12 @@ import { useAppSelector } from '../../actions/redux';
 
 const Layout = () => {
     const [isNavMenuOpen, setNavMenuOpen] = useState(true);
-    const { isAuth, isLoading } = useAppSelector(state => state.userReducer);
+    const { isAuth } = useAppSelector(state => state.userReducer);
+    const isZoomPageOpen = useAppSelector(state => state.commonReducer.zoomImage.isOpen);
 
     const handleToggleNavMenu = () => {
         setNavMenuOpen(!isNavMenuOpen);
     }
-
-
-
 
     return (
         <div className={`${styles.container} ${isAuth ? isNavMenuOpen ? styles.navmenu_open : styles.navmenu_close : styles.navmenu_hidden}`}>
@@ -33,6 +32,8 @@ const Layout = () => {
 
                 <Outlet />
             </div>
+
+            {isZoomPageOpen && <ZoomPage />}
 
         </div>
     );

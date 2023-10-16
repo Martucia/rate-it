@@ -20,7 +20,12 @@ export interface IStageCreate {
     name: string,
     color: string,
     background: string,
-    project: number
+    project?: {
+        id: number
+    },
+    user?: {
+        id: number
+    }
 }
 
 export interface IStagesUpdate extends Partial<IStage> { }

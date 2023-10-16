@@ -4,7 +4,6 @@ import { AppDispatch } from '../store/store';
 import { projectsSlice } from '../store/reducers/projectsSlice';
 import { getConfig } from '../utils/functions';
 import { IStage, IStageCreate, IStagesUpdate } from '../types/stage';
-// import { commonSlice } from '../store/reducers/commonSlice';
 
 export const createStage = (data: IStageCreate) => async (dispatch: AppDispatch) => {
     try {
@@ -14,9 +13,10 @@ export const createStage = (data: IStageCreate) => async (dispatch: AppDispatch)
 
         dispatch(projectsSlice.actions.addStage(response.data));
 
-        return response.data.id;
+        return true;
     } catch (e: any) {
-        dispatch(projectsSlice.actions.projectFetchingError(e.response.data.message || e.message));
+        dispatch(projectsSlice.actions.projectFetchingError(e.response?.data?.message || e.message));
+        return false;
     }
 }
 
@@ -55,6 +55,7 @@ export const deleteStage = (id: number, projectId: number) => async (dispatch: A
         await axios.delete<any>(`${BASE_URL}/stages/${id}`, getConfig());
 
         dispatch(projectsSlice.actions.removeStage({ projectId, id }));
+
     } catch (e: any) {
         console.log(e)
     }

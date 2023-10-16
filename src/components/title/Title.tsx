@@ -9,14 +9,14 @@ import { updateProject } from '../../actions/projects';
 interface TitleProps {
     // title: string;
     isEdited: boolean,
-    id: number | null
+    projectId: number | null
 }
 
-const Title = ({ id, isEdited }: TitleProps) => { //  title, 
+const Title = ({ projectId, isEdited }: TitleProps) => { //  title, 
     const [isEdit, setEdit] = useState(false);
     const [value, setValue] = useState('');
 
-    const title = useAppSelector(state => state.projectReducer.projects.find(project => project.id === id)?.name)
+    const title = useAppSelector(state => state.projectReducer.projects.find(project => project.id === projectId)?.name)
 
     const inputRef = useRef<HTMLInputElement | null>(null);
     const titleRef = useRef<HTMLDivElement | null>(null);
@@ -29,8 +29,8 @@ const Title = ({ id, isEdited }: TitleProps) => { //  title,
 
     const save = () => {
 
-        if (value.length > 0 && id) {
-            dispatch(updateProject({ name: value, id }));
+        if (value.length > 0 && projectId) {
+            dispatch(updateProject({ name: value, id: projectId }));
         } else {
             if (title) {
                 setValue(title);
@@ -43,10 +43,12 @@ const Title = ({ id, isEdited }: TitleProps) => { //  title,
     }
 
     const handleToggleEdit = () => {
-        setEdit(!isEdit);
+        if (projectId) {
+            setEdit(!isEdit);
 
-        if (title !== value && isEdit) {
-            save();
+            if (title !== value && isEdit) {
+                save();
+            }
         }
     }
 
@@ -76,6 +78,14 @@ const Title = ({ id, isEdited }: TitleProps) => { //  title,
 
     useEffect(() => ClickOutside({ element: titleRef, close: closeEdit }), []);
 
+    if (!projectId) {
+        return (
+            <h3 className={styles.title}>
+                Your tasks
+            </h3>
+        )
+    }
+
     return (
         <h3 ref={titleRef} className={styles.title}>
             {isEdit
@@ -91,7 +101,7 @@ const Title = ({ id, isEdited }: TitleProps) => { //  title,
                 </span>
             }
 
-            {isEdited
+            {isEdited && projectId
                 && <button onClick={handleToggleEdit}>
                     <img src={edit} alt="edit" />
                 </button>}

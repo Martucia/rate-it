@@ -6,15 +6,35 @@ export interface IComment {
     text: string,
     createdAt: Date,
     user: IUser,
-    task: ITask
+    task: ITask,
+    files: string[]
 }
+
+// export interface ICommentCreate {
+//     text: string,
+//     task: {
+//         id: number
+//     },
+//     files: any[]
+// }
 
 export interface ICommentCreate {
-    text: string,
-    task: {
-        id: number
-    }
+    comment: {
+        text: string,
+        task: {
+            id: number
+        }
+    },
+    files: any[]
 }
 
+export interface ICommentUpdate {
+    comment: {
+        id: number,
+        text: string,
+        files: string[]
+    },
+    files: any[]
+}
 
-export interface ICommentUpdate extends Partial<IComment> { }
+// export interface ICommentUpdate extends Partial<IComment> { }

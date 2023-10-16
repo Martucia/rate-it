@@ -1,16 +1,10 @@
-import { NavLink } from 'react-router-dom'; // useNavigate
+import { NavLink } from 'react-router-dom';
 
 import styles from './Header.module.sass';
 
 import logo from '@images/logo.svg'
 
 const Header = () => {
-    // const navigate = useNavigate();
-
-    // const handleScrollToComponent = (path: string) => {
-    //     console.log(path)
-    //     navigate(`#${path}`);
-    // };
 
     return (
         <header className={styles.header}>

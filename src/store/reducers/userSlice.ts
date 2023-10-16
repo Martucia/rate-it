@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { IUser } from '../../types/user';
+import { IStage, IStagesUpdate } from '../../types/stage';
 
 type UserState = {
     user: IUser | null,
@@ -39,7 +40,7 @@ export const userSlice = createSlice({
             state.isAuth = false;
             state.user = initialState.user;
             localStorage.removeItem('token');
-        }
+        },
     },
 })
 

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-import { BASE_URL } from '../utils/constants';
+import { BASE_URL, SOCKET_URL } from '../utils/constants';
 import { getConfig } from '../utils/functions';
+import io, { Socket } from 'socket.io-client';
 import { AppDispatch } from '../store/store';
 import { taskSlice } from '../store/reducers/tasksSlice';
 import { IComment, ICommentCreate, ICommentUpdate } from '../types/comment';
@@ -10,9 +11,17 @@ export const createComment = (data: ICommentCreate) => async (dispatch: AppDispa
     try {
         dispatch(taskSlice.actions.taskFetching());
 
-        const response = await axios.post<IComment>(`${BASE_URL}/comments/`, data, getConfig());
+        const formData = new FormData();
 
-        dispatch(taskSlice.actions.addComment({ comment: response.data, taskId: data.task.id }));
+        data.files.forEach((file) => {
+            formData.append('files', file);
+        });
+
+        formData.append('comment', JSON.stringify(data.comment));
+
+        const response = await axios.post<IComment>(`${BASE_URL}/comments/`, formData, getConfig("files"));
+
+        dispatch(taskSlice.actions.addComment({ comment: response.data, taskId: data.comment.task.id }));
 
         return true;
     } catch (e) {
@@ -22,13 +31,19 @@ export const createComment = (data: ICommentCreate) => async (dispatch: AppDispa
     }
 }
 
-export const updateComment = (comment: ICommentUpdate) => async (dispatch: AppDispatch) => {
+export const updateComment = (data: ICommentUpdate) => async (dispatch: AppDispatch) => {
     try {
         dispatch(taskSlice.actions.taskFetching());
 
-        const response = await axios.patch<any>(`${BASE_URL}/comments/${comment.id}`, comment, getConfig());
+        const formData = new FormData();
 
-        console.log(response.data)
+        data.files.forEach((file) => {
+            formData.append('files', file);
+        });
+
+        formData.append('comment', JSON.stringify(data.comment));
+
+        const response = await axios.patch<any>(`${BASE_URL}/comments/${data.comment.id}`, formData, getConfig("files"));
 
         dispatch(taskSlice.actions.updateComment(response.data));
 
@@ -53,5 +68,26 @@ export const deleteComment = (id: number) => async (dispatch: AppDispatch) => {
         console.log(e)
 
         return false;
+    }
+}
+
+// SOCKET
+
+export class SocketApi {
+    static socket: null | Socket;
+
+    static createConection(): void {
+        this.socket = io(SOCKET_URL)
+
+        this.socket.on('connect', () => {
+            console.log("connected")
+        })
+        this.socket.on('disconnect', (e) => {
+            console.log("disconnected", e)
+        })
+    }
+
+    static send(comment: ICommentCreate): void {
+        this.socket?.emit('comment', comment);
     }
 }

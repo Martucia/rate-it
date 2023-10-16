@@ -1,6 +1,7 @@
 import { IComment } from "./comment"
 import { IProject } from "./project"
 import { IStage } from "./stage"
+import { ITag } from "./tag"
 import { IUser } from "./user"
 
 export interface ITask {
@@ -18,7 +19,9 @@ export interface ITask {
     comments: IComment[],
     childTasks: ITask[],
     parentTask: ITask,
-    files: string[]
+    files: string[],
+    downloadedTask: 'full' | 'simple',
+    tags: ITag[]
 }
 
 // export interface ITaskCreate extends Omit<ITask, 'id' | 'deadline' | 'createdAt' | 'stage' | 'project' | 'index' | 'responsible'> {
@@ -32,4 +35,4 @@ export interface ITaskCreate {
     title: string,
 }
 
-export interface ITaskUpdate extends Partial<ITask> { }
+export interface ITaskUpdate extends Partial<ITask> {}

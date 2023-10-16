@@ -44,7 +44,15 @@ export const taskSlice = createSlice({
         setTask(state, action: PayloadAction<ITask>) {
             const isExited = state.tasks.find(task => task.id == action.payload.id);
 
-            if (isExited) return state;
+            if (isExited) {
+                if (isExited.downloadedTask === "simple") {
+                    state.tasks = state.tasks.map(task => task.id === action.payload.id
+                        ? action.payload
+                        : task
+                    )
+                }
+                return state
+            };
 
             state.tasks = [action.payload, ...state.tasks];
             state.tasks = state.tasks.map((task, index) => {
@@ -79,6 +87,9 @@ export const taskSlice = createSlice({
             })
             state.isLoading = false;
         },
+        removeTask(state, action: PayloadAction<number>) {
+            state.tasks = state.tasks.filter(task => task.id !== action.payload)
+        },
         // COMMENTS
         addComment(state, action: PayloadAction<{ comment: IComment, taskId: number }>) {
             state.tasks = state.tasks.map(task => task.id === action.payload.taskId
@@ -92,22 +103,25 @@ export const taskSlice = createSlice({
         updateComment(state, action: PayloadAction<IComment>) {
             state.tasks = state.tasks.map(task => task.id === action.payload.task.id
                 ? {
-                    ...task, ...action.payload
+                    ...task, comments: task.comments.map(comment => comment.id === action.payload.id
+                        ? {
+                            ...comment, ...action.payload
+                        }
+                        : comment
+                    )
                 }
                 : task
             )
             state.isLoading = false;
         },
-removeComment(state, action: PayloadAction<{ id: number, taskId: number }>) {
-    console.log(action.payload)
-
-    state.tasks = state.tasks.map(task => task.id === action.payload.taskId
-        ? {
-            ...task, comments: task.comments.filter(comment => comment.id !== action.payload.id)
+        removeComment(state, action: PayloadAction<{ id: number, taskId: number }>) {
+            state.tasks = state.tasks.map(task => task.id === action.payload.taskId
+                ? {
+                    ...task, comments: task.comments.filter(comment => comment.id !== action.payload.id)
+                }
+                : task
+            )
         }
-        : task
-    )
-}
     },
 })
 

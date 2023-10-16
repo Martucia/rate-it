@@ -27,7 +27,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const fromPage = location.state?.from || '/tasks';
+    const fromPage = location.state?.from || '/tasks/';
 
     const handleSubmit = async (data: ILogUser, setSubmitting: Function) => {
         const result = await dispatch(login(data));
@@ -38,7 +38,7 @@ const Login = () => {
     }
 
     if (isAuth) {
-        return <Navigate to="/tasks/own" />
+        return <Navigate to="/tasks/" />
     }
 
     return (

@@ -13,12 +13,12 @@ export const getAllProjects = () => async (dispatch: AppDispatch) => {
 
         const response = await axios.get<IProject[]>(`${BASE_URL}/projects`, getConfig());
 
-        const projects = response.data.map<IProject>(pr => ({
-            ...pr,
-            downloadedTask: 'none'
-        }))
+        // const projects = response.data.map<IProject>(pr => ({
+        //     ...pr,
+        //     downloadedTasks: 'none'
+        // }))
 
-        dispatch(projectsSlice.actions.setProjects(projects));
+        dispatch(projectsSlice.actions.setProjects(response.data));
     } catch (e: any) {
         dispatch(projectsSlice.actions.projectFetchingError(e.response.data.message || e.message));
     }
@@ -68,15 +68,14 @@ export const updateProject = (project: IProjectUpdate) => async (dispatch: AppDi
     }
 }
 
-export const updateParticipants = (participant: IParticipant[], id: number) => async (dispatch: AppDispatch) => {
+export const inviteParticipants = (id: number, participants: { email: string }[]) => async (dispatch: AppDispatch) => {
     try {
         dispatch(projectsSlice.actions.projectFetching());
 
-        console.log(participant)
+        const response = await axios.patch<IProject>(`${BASE_URL}/projects/invite/${id}`, participants, getConfig());
 
-        // const response = await axios.patch<IProject>(`${BASE_URL}/projects/${project.id}`, project, getConfig());
-
-        // console.log(response)
+        console.log(participants)
+        console.log(response.data)
 
         // dispatch(projectsSlice.actions.updateProject(response.data));
     } catch (e: any) {

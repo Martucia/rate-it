@@ -26,15 +26,11 @@ import { IProject } from '../../../types/project';
 import { moveTasks } from '../../../actions/tasks';
 import empty from '@images/empty.png'
 import { commonSlice } from '../../../store/reducers/commonSlice';
-import { Route, Routes } from 'react-router-dom';
-import Task from '../../modals/task/Task';
+import { Outlet } from 'react-router-dom';
 
-interface KanbanProps {
-    projectId: number | null
-}
-
-const Kanban = ({ projectId }: KanbanProps) => {
+const Kanban = () => {
     const { tasksView, isStageCreateOpen } = useAppSelector(state => state.commonReducer);
+    const projectId = useAppSelector(state => state.commonReducer.projectId);
 
     const project = useAppSelector<IProject | undefined>(state =>
         state.projectReducer.projects.find(project => project.id === projectId)
@@ -44,7 +40,7 @@ const Kanban = ({ projectId }: KanbanProps) => {
     const kanbanRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        if (project) {
+        if (project && projectId) {
             const projectOut = [...project.stages];
             projectOut.sort((a, b) => a.index - b.index)
             setStages(projectOut);
@@ -80,10 +76,16 @@ const Kanban = ({ projectId }: KanbanProps) => {
         }))
     }
 
-    const handleCreateUpdateStage = (data: IStageCreate) => {
-        dispatch(createStage(data));
+    const handleCreateUpdateStage = async (data: IStageCreate) => {
+        if (projectId) {
+            const stage = { ...data, project: { id: projectId } };
 
-        handleOpenStageCreate(false);
+            const result = await dispatch(createStage(stage));
+
+            if (result) {
+                handleOpenStageCreate(false);
+            }
+        }
     }
 
     const sensors = useSensors(
@@ -101,12 +103,9 @@ const Kanban = ({ projectId }: KanbanProps) => {
         if (kanbanRef.current) {
             kanbanRef.current.scrollLeft += scrollAmount;
 
-            // console.log(kanbanRef.current.scrollLeft)
 
             // const isScrolledLeft = kanbanRef.current.scrollLeft > 0;
             // // const isScrolledRight = kanbanRef.current.scrollLeft + kanbanRef.current.clientWidth < kanbanRef.current.scrollWidth;
-
-            // console.log(isScrolledToLeft, isScrolledLeft)
 
             // if (isScrolledToLeft !== isScrolledLeft) {
             //     setIsScrolledToLeft(isScrolledLeft);
@@ -153,7 +152,7 @@ const Kanban = ({ projectId }: KanbanProps) => {
         );
     }
 
-    if (stages) return (
+    return (
         <div className={styles.kanban_wrapper}>
             {isScrolledToLeft && (
                 <button
@@ -216,7 +215,7 @@ const Kanban = ({ projectId }: KanbanProps) => {
                         </DndContext>
 
                         {isStageCreateOpen && (
-                            <CreateUpdateStage create={(data: any) => handleCreateUpdateStage({ ...data, project: { id: projectId }, index: stages.length === 0 ? stages.length : stages.length + 1 })} />
+                            <CreateUpdateStage create={handleCreateUpdateStage} />
                         )}
                     </>
                     : <>
@@ -236,14 +235,11 @@ const Kanban = ({ projectId }: KanbanProps) => {
                 }
             </div>
 
-            <Routes>
-                <Route
-                    path='/details/:id'
-                    element={
-                        <Task />
-                    }
-                />
-            </Routes>
+            <Outlet />
+
+            {/* <Routes>
+          
+            </Routes> */}
         </div>
 
     )

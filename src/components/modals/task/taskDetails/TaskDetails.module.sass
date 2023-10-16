@@ -1,3 +1,5 @@
+@import '@variables'
+
 .details
     background: #E9EBF0
     padding: 30px
@@ -5,17 +7,15 @@
     padding-top: 100px
 
 .wrapper
-    border-radius: 12px 12px 12px 12px
+    border-radius: 8px
     overflow: hidden
-    border: 1px solid #9AB2DD
     background: #fff
 
 .header
     display: flex
     align-items: center
-    justify-content: space-between
     padding: 12px 16px
-    border-bottom: 1px solid #9AB2DD
+    border-bottom: 1px solid #E9EBF0
 
 .title
     color: #000
@@ -33,12 +33,17 @@
     flex-direction: column
     gap: 12px
     margin-bottom: 12px
+    &_header
+        color: #323D52
+        line-height: 21px
+        font-weight: 500
+        display: flex
+        align-items: center
+        justify-content: space-between
 
-.name
-    color: #323D52
-    font-size: 16px
-    line-height: 21px
-    font-weight: 500
+.btn
+    color: $bl
+    font-weight: 700
 
 .user
     display: flex
@@ -46,12 +51,12 @@
     gap: 8px
     span
         color: #323D52
-        font-size: 16px
+        font-size: 15px
         line-height: 21px
 
 .avatar
-    width: 32px
-    height: 32px
+    width: 30px
+    height: 30px
     overflow: hidden
     border-radius: 50%
     display: flex
@@ -71,3 +76,24 @@
     font-size: 14px
     line-height: 21px
     margin-top: 16px
+
+.btns
+    position: absolute
+    top: 30px
+    right: 30px
+    display: flex
+    align-items: center
+    gap: 16px
+    padding-bottom: 12px
+
+.dots
+    display: flex
+    justify-content: space-between
+    align-items: center
+    gap: 3px
+    padding: 4px
+    span
+        width: 4px
+        height: 4px
+        border-radius: 100%
+        background: #000000

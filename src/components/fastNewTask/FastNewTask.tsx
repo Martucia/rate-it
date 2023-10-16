@@ -25,7 +25,6 @@ const FastNewTask = ({ close, stageId }: FastNewTaskProps) => {
 
     const handleSaveTask = () => {
         if (user) {
-            console.log(projectId)
             dispatch(createTask({
                 title,
                 stage: stageId,

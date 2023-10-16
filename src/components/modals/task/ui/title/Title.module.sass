@@ -1,0 +1,64 @@
+
+.title
+    font-size: 30px
+    font-weight: 700
+    line-height: 36px
+    width: 100%
+    display: flex
+    align-items: center
+    gap: 12px
+    transition: 0.2s
+    border-radius: 4px
+    padding: 0 6px
+    flex-direction: column
+    cursor: pointer
+    &:hover
+        background-color: #E9EBF0
+    &:active
+        background: transparent
+    span
+        width: 100%
+    &.editing
+        &:hover
+            background: transparent
+
+.block
+    position: relative
+    width: 100%
+
+.input
+    font-size: 30px
+    font-weight: 700
+    line-height: 36px
+    border-bottom: 1px solid #E9EBF0
+    padding-bottom: 8px
+    width: 100%
+
+.btns
+    position: absolute
+    right: 0
+    top: calc(100% + 6px)
+    display: flex
+    align-items: center
+    gap: 8px
+
+.btn
+    width: 30px
+    height: 30px
+    display: flex
+    align-items: center
+    justify-content: center
+    background: #E9EBF0
+    border-radius: 4px
+    transition: 0.3s
+    &:hover
+        background: #d7deed
+    img
+        width: 16px
+
+.error
+    font-size: 12px
+    color: #8b0000
+    font-weight: 600
+    display: block
+    width: 100%

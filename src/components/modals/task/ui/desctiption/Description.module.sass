@@ -1,0 +1,87 @@
+@import '@variables'
+
+.desc
+    font-size: 16px
+    font-weight: 500
+    line-height: 24px
+    margin-top: 24px
+    cursor: pointer
+    border-radius: 4px
+    padding: 6px
+    &:hover
+        background-color: #E9EBF0
+    &.editing
+        border: 1px solid #E9EBF0
+        padding: 24px
+        &:hover
+            background: transparent
+
+.content
+    // word-break: break-all
+    word-break: break-word
+
+.empty
+    opacity: 0.4
+    display: flex
+    align-items: center
+    gap: 8px
+    img
+        width: 14px
+
+.input
+    overflow: hidden
+    resize: none
+    height: auto
+    width: 100%
+    font-size: 16px
+    font-weight: 500
+    line-height: 24px
+    &::placeholder
+        color: #C7C9CF
+    &:focus
+        height: auto
+
+// .btn
+    // padding: 12px 20px
+    // border-radius: 4px
+    // &.cancel
+    //     opacity: 0.5
+    //     transition: 0.3s
+    //     max-width: max-content
+    //     &:hover
+    //         opacity: 1
+    // &.save
+    //     background-color: $bl
+    //     color: #fff
+    //     padding: 8px 20px
+    //     border-radius: 10px
+
+.bottom
+    display: flex
+    align-items: center
+    justify-content: space-between
+    margin-top: 24px
+
+.btns
+    display: flex
+    align-items: center
+    gap: 8px
+
+.btn
+    width: 18px
+    height: 18px
+    display: flex
+    align-items: center
+    justify-content: center
+    border-radius: 4px
+    transition: 0.3s
+    img
+        width: 100%
+    &.cancel, &.save
+        background: #E9EBF0
+        width: 30px
+        height: 30px
+        &:hover
+            background: #d7deed
+        img
+            width: 16px

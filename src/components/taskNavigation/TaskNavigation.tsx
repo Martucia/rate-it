@@ -15,12 +15,11 @@ import list from '@images/list.svg'
 import edit from '@images/board_edit.svg'
 import new_stage from '@images/new_stage.svg'
 
-interface TaskNavigationProps {
-    projectId: number | null
-}
 
-const TaskNavigation = ({ projectId }: TaskNavigationProps) => {
+const TaskNavigation = () => {
     const view = useAppSelector(state => state.commonReducer.tasksView);
+    const projectId = useAppSelector(state => state.commonReducer.projectId);
+
     const participants = useAppSelector(state => state.projectReducer.projects.find(project => project.id === projectId)?.participants);
 
     const setClass = ({ isActive }: { isActive: boolean }) => (isActive ? `${styles.active} ${styles.link}` : styles.link);
@@ -41,27 +40,28 @@ const TaskNavigation = ({ projectId }: TaskNavigationProps) => {
     return (
         <>
             <div className={styles.navigation}>
-                <Title isEdited={true} id={projectId} />
+                <Title isEdited={true} projectId={projectId} />
 
                 <nav className={styles.nav}>
-                    <NavLink to='/tasks/' className={setClass}>
+                    <NavLink to={`/project/${projectId}/`} className={setClass}>
                         Kanban
                     </NavLink>
-                    <NavLink to='/tasks/calendar' className={setClass}>
+                    <NavLink to={`/project/${projectId}/calendar`} className={setClass}>
                         Calendar
                     </NavLink>
-                    <NavLink to='/tasks/dashboard' className={setClass}>
+                    <NavLink to={`/project/${projectId}/dashboard`} className={setClass}>
                         Dashboard
                     </NavLink>
-                    <NavLink to='/tasks/progress' className={setClass}>
+                    <NavLink to={`/project/${projectId}/progress`} className={setClass}>
                         Progress
                     </NavLink>
-                    <NavLink to='/tasks/more' className={setClass}>
+                    <NavLink to={`/project/${projectId}/more`} className={setClass}>
                         More
                     </NavLink>
                 </nav>
 
-                <Participants type="project" id={projectId} participants={participants || []} max={5} />
+                {projectId && <Participants type="project" id={projectId} participants={participants || []} max={5} />}
+
             </div>
             <div className={styles.filter}>
                 <div className={styles.views}>

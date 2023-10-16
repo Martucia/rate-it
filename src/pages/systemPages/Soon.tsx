@@ -2,7 +2,7 @@ import styles from './styles.module.sass';
 
 import img from '@images/coming_soon.svg';
 
-const Soon = ({ fixed = true }) => {
+const Soon = ({ fixed = false }) => {
     return (
         <div className={`${styles.page}  ${fixed && styles.fixed}`}>
             <div className={styles.image}>

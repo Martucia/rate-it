@@ -10,10 +10,12 @@ import { commonSlice } from '../../../store/reducers/commonSlice';
 import TagInput from '../../tagInput/TagInput';
 import { useEffect, useState } from 'react';
 import { IParticipant } from '../../../types/user';
-import { updateProject } from '../../../actions/projects';
+import { inviteParticipants } from '../../../actions/projects';
 
 const ParticipantsChange = () => {
-    const [participants, setParticipants] = useState<IParticipant[]>([]);
+    // const [participants, setParticipants] = useState<IParticipant[]>([]);
+    const [participants, setParticipants] = useState<{ email: string }[]>([]);
+    
 
     const dispatch = useAppDispatch();
 
@@ -28,23 +30,32 @@ const ParticipantsChange = () => {
         }))
     }
 
-    useEffect(() => {
-        if (project) {
+    // useEffect(() => {
+    //     if (project) {
 
-            setParticipants(project.participants);
-        }
+    //         setParticipants(project.participants);
+    //     }
 
-    }, [project])
+    // }, [project])
 
     const handleSave = () => {
+        // if (project) {
+        // dispatch(updateProject(
+        //     {
+        //         participants,
+        //         id: project.id
+        //     }
+        // ))
+        // }
         if (project) {
-            // dispatch(updateProject(
-            //     {
-            //         participants,
-            //         id: project.id
-            //     }
-            // ))
+            dispatch(inviteParticipants(project.id, participants))
         }
+    }
+
+    const checkExistingUser = (email: string): boolean => {
+        const isExist = project?.participants.find(user => user.user.email === email);
+
+        return isExist ? true : false;
     }
 
     if (project) return (
@@ -60,10 +71,11 @@ const ParticipantsChange = () => {
                 <TagInput
                     users={participants}
                     setUsers={setParticipants}
+                    check={checkExistingUser}
                 />
 
                 <button className={s.btn} onClick={handleSave}>
-                    Save
+                    Send invite
                 </button>
             </div>
         </Overflow>

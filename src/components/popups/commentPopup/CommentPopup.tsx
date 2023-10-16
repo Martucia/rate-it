@@ -1,18 +1,20 @@
 import { useEffect, useRef } from 'react';
 
-import styles from './CommentPopup.module.sass';
 import s from '../index.module.sass';
 import { useAppDispatch } from '../../../actions/redux';
 import { ClickOutside } from '../../../utils/functions';
 import { deleteComment } from '../../../actions/comments';
+import clipboardCopy from 'clipboard-copy';
 
 interface CommentPopupProps {
     close: () => void,
     id: number,
-    setEdit: () => void
+    setEdit: () => void,
+    isOwner: boolean,
+    text: string
 }
 
-const CommentPopup = ({ close, id, setEdit }: CommentPopupProps) => {
+const CommentPopup = ({ close, id, setEdit, isOwner, text }: CommentPopupProps) => {
     const popupRef = useRef<HTMLDivElement | null>(null);
 
     const dispatch = useAppDispatch();
@@ -21,16 +23,36 @@ const CommentPopup = ({ close, id, setEdit }: CommentPopupProps) => {
         dispatch(deleteComment(id));
     }
 
+    const handleCopyText = () => {
+        clipboardCopy(text)
+            // .then(() => {
+            //     dispatch(setNotification(`Текст скопійовано в буфер обміну`, true));
+            // })
+            // .catch(err => {
+            //     dispatch(setNotification(`Помилка при копіюванні: ${err}`, false));
+            // });
+    }
+
     useEffect(() => ClickOutside({ element: popupRef, close }))
 
     return (
         <div ref={popupRef} className={s.popup}>
-            <button onClick={setEdit}>
-                Edit
-            </button>
-            <button onClick={handleDeleteComment}>
-                Delete
-            </button>
+            {isOwner
+                ? <>
+                    <button onClick={setEdit}>
+                        Edit
+                    </button>
+                    <button onClick={handleDeleteComment}>
+                        Delete
+                    </button>
+                </>
+                : <>
+                    <button onClick={handleCopyText}>
+                        Copy
+                    </button>
+                </>
+            }
+
         </div>
     );
 }

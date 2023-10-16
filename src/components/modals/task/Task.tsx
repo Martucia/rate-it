@@ -1,8 +1,7 @@
 import { useNavigate, useParams, NavLink } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../../actions/redux';
-import { ITask } from '../../../types/task';
 import { getTask } from '../../../actions/tasks';
 
 import Overflow from '../../overflow/Overflow';
@@ -15,45 +14,42 @@ import add_child from '@images/add_child.svg';
 import Comments from '../../comments/Comments';
 import { BASE_URL } from '../../../utils/constants';
 import TaskDetails from './taskDetails/TaskDetails';
+import Title from './ui/title/Title';
+import Description from './ui/desctiption/Description';
 
 const Task = () => {
     const { id } = useParams();
-    const tasks = useAppSelector(state => state.taskReducer.tasks);
-    const [task, setTask] = useState<ITask | null>(null);
+    const task = useAppSelector(state => state.taskReducer.tasks.find(task => id ? task.id === +id : null));
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!id) return;
-
-        const localTask = tasks.find(task => task.id === +id);
-
-        if (localTask) {
-            setTask(localTask);
-        } else {
+        
+        if (!task || task.downloadedTask === 'simple') {
             dispatch(getTask(+id));
         }
-    }, [id, tasks]);
+    }, [id]);
 
     const handleCloseModal = () => {
         navigate(-1);
     }
 
-    if (id === undefined || !task) {
-        return <div>Loading</div>;
+    if (id === undefined || !task || task.downloadedTask === 'simple') {
+        return <Overflow isCenter={true} close={handleCloseModal}>
+            <div className={`${s.modal} ${styles.task}`}>
+                <div>Loading</div>
+            </div>
+        </Overflow>;
     }
 
     return (
         <Overflow isCenter={true} close={handleCloseModal}>
             <div className={`${s.modal} ${styles.task}`}>
                 <div className={styles.content}>
-                    <div className={styles.title}>
-                        {task.title}
-                    </div>
-                    <div className={styles.desc}>
-                        {task.description}
-                    </div>
+                    <Title title={task.title} taskId={task.id} />
+                    <Description desc={task.description} taskId={task.id} />
 
                     <div className={styles.btns}>
                         <button className={styles.btn}>
@@ -76,15 +72,12 @@ const Task = () => {
                                     <NavLink to="/" className={styles.attachment_name}>
                                         {file}
                                     </NavLink>
-                                    {/* <div className={styles.attachment_date}>
-                                        27 Sep 2023, 03:13AM
-                                    </div> */}
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <Comments id={+id} comments={task.comments} />
+                    <Comments id={+id} taskComments={task.comments} />
                 </div>
 
                 <TaskDetails

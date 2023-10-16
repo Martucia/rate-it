@@ -58,7 +58,6 @@ export const projectsSlice = createSlice({
         },
         // STAGES SLICES
         addStage(state, action: PayloadAction<IStage>) {
-            // console.log(action.payload.projectId, action.payload, state.projects)
             state.projects = state.projects.map(project =>
                 project.id == action.payload.project.id
                     ? {

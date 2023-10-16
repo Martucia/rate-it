@@ -19,7 +19,11 @@ type CommonState = {
     },
     isStageCreateOpen: boolean,
     projectId: number | null,
-    taskModal: TaskModalType
+    taskModal: TaskModalType,
+    zoomImage: {
+        src: string | null,
+        isOpen: boolean
+    }
 }
 
 type CommonStateKeys = keyof CommonState;
@@ -37,6 +41,10 @@ const initialState: CommonState = {
     taskModal: {
         id: null,
         isOpen: false
+    },
+    zoomImage: {
+        src: null,
+        isOpen: false
     }
 };
 
@@ -47,7 +55,7 @@ export const commonSlice = createSlice({
         changeView(state, action: PayloadAction<{ view: string }>) {
             state.tasksView = action.payload.view;
         },
-        toggleParam(state, action: PayloadAction<{ param: CommonStateKeys, value: boolean | number }>) {
+        toggleParam(state, action: PayloadAction<{ param: CommonStateKeys, value: boolean | number | null }>) {
             return produce(state, (draft: Draft<CommonState>) => {
                 draft[action.payload.param] = action.payload.value;
             });
@@ -60,6 +68,12 @@ export const commonSlice = createSlice({
         toggleTaskModal(state, action: PayloadAction<TaskModalType>) {
             state.taskModal.id = action.payload.id;
             state.taskModal.isOpen = action.payload.isOpen;
+        },
+        toggleZoomPage(state, action: PayloadAction<{ isOpen: boolean, src: string }>) {
+            state.zoomImage = {
+                src: action.payload.src,
+                isOpen: action.payload.isOpen
+            }
         }
     },
 })

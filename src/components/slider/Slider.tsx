@@ -20,7 +20,6 @@ const CircleSlider = () => {
     };
 
     const handleSliderScroll = (e) => {
-        console.log(sliderRef.current)
         if (sliderRef.current) {
             const newIndex = e.deltaY > 0 ? activeIndex + 1 : activeIndex - 1;
             setActiveIndex((newIndex + items.length) % items.length);

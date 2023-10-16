@@ -23,7 +23,7 @@ export const getAllTasks = (projectId: number) => async (dispatch: AppDispatch) 
         dispatch(taskSlice.actions.taskFetching())
         const response = await axios.get<ITask[]>(`${BASE_URL}/tasks/all/${projectId}`, getConfig());
         dispatch(taskSlice.actions.setTasks(response.data));
-        dispatch(projectsSlice.actions.updateProject({ id: projectId, downloadedTask: "all" }))
+        dispatch(projectsSlice.actions.updateProject({ id: projectId, downloadedTasks: "all" }))
     } catch (e: any) {
         dispatch(taskSlice.actions.taskFetchingError(e.response.data.message || e.message));
     }
@@ -47,8 +47,38 @@ export const getTask = (id: number) => async (dispatch: AppDispatch) => {
         dispatch(taskSlice.actions.taskFetching())
         const response = await axios.get<ITask>(`${BASE_URL}/tasks/${id}`, getConfig());
         dispatch(taskSlice.actions.setTask(response.data));
-        // dispatch(projectsSlice.actions.updateProject({ id: response.data.project?.id, downloadedTask: "all" }))
     } catch (e: any) {
         dispatch(taskSlice.actions.taskFetchingError(e.response.data.message || e.message));
+    }
+}
+
+export const updateTask = (data: ITaskUpdate) => async (dispatch: AppDispatch) => {
+    try {
+        dispatch(taskSlice.actions.taskFetching())
+        const response = await axios.patch<ITask>(`${BASE_URL}/tasks/${data.id}`, data, getConfig());
+        dispatch(taskSlice.actions.updateTask(response.data));
+
+        return true;
+    } catch (e: any) {
+        console.log(e)
+        dispatch(taskSlice.actions.taskFetchingError(e.response.data.message || e.message));
+
+        return false;
+    }
+}
+
+export const deleteTask = (id: number) => async (dispatch: AppDispatch) => {
+    try {
+        dispatch(taskSlice.actions.taskFetching())
+
+        await axios.delete<any>(`${BASE_URL}/tasks/${id}`, getConfig());
+        
+        dispatch(taskSlice.actions.removeTask(id));
+
+        return true;
+    } catch (e: any) {
+        dispatch(taskSlice.actions.taskFetchingError(e.response.data.message || e.message));
+
+        return false;
     }
 }

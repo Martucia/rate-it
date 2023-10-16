@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import styles from './StagePopup.module.sass';
 import s from '../index.module.sass';
 import { ClickOutside } from '../../../utils/functions';
 import { useAppDispatch, useAppSelector } from '../../../actions/redux';
@@ -21,9 +20,7 @@ const StagePopup = ({ close, id, setEdit }: StagePopupProps) => {
     useEffect(() => ClickOutside({ element: popupRef, close }), []);
 
     const handleDeleteStage = () => {
-        if (projectId) {
-            dispatch(deleteStage(id, projectId));
-        }
+        if (projectId) dispatch(deleteStage(id, projectId));
     }
 
     return (

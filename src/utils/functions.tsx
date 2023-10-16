@@ -1,17 +1,75 @@
-const getToken = () => {
+import { useEffect, useState } from 'react';
+import moment from 'moment';
+import { commonSlice } from "../store/reducers/commonSlice";
+import { AppDispatch } from "../store/store";
+
+export const getToken = () => {
     return localStorage.getItem('token');
 };
 
-export const getConfig = () => {
+export const getConfig = (type?: string) => {
     const token = getToken();
 
     const config = {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
         }
     };
 
+    if (type === "files") {
+        return {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'multipart/form-data'
+            }
+        };
+    }
+
     return config;
+};
+
+export const getSocketConfig = () => {
+    const token = getToken();
+
+    return {
+        transportOptions: {
+            polling: {
+                extraHeaders: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }
+        }
+    };
+
+}
+
+export const useFormattedDate = (createdAt: Date) => {
+    const [formattedDate, setFormattedDate] = useState('');
+
+    useEffect(() => {
+        const updateFormattedDate = () => {
+            const createdAtMoment = moment(createdAt);
+            const now = moment();
+            const isToday = createdAtMoment.isSame(now, 'day');
+
+            if (!isToday) {
+                setFormattedDate(createdAtMoment.format('MMMM D, HH:mm'));
+            } else if (now.diff(createdAtMoment, 'minutes') < 60) {
+                setFormattedDate(createdAtMoment.startOf('seconds').fromNow());
+            } else {
+                setFormattedDate(createdAtMoment.format('HH:mm'));
+            }
+        };
+
+        const interval = setInterval(updateFormattedDate, 60 * 1000);
+        updateFormattedDate();
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [createdAt]);
+
+    return formattedDate;
 };
 
 export const formatDate = (dateString: string | Date): string => {
@@ -77,3 +135,7 @@ export const ClickOutside = ({ element, close }: ClickOutsideProps) => {
         window.removeEventListener('mousedown', handleClickOutside);
     };
 };
+
+export const zoomPage = (src: string) => async (dispatch: AppDispatch) => {
+    dispatch(commonSlice.actions.toggleZoomPage({ src: src, isOpen: true }));
+}

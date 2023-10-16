@@ -94,7 +94,7 @@ const Registration = () => {
                 </Formik>
                 <div className={styles.footer}>
                     <p>Do you have account?</p>
-                    <NavLink className={styles.link} to='/log'>
+                    <NavLink className={styles.link} to='/login'>
                         Go to Login
                     </NavLink>
                 </div>

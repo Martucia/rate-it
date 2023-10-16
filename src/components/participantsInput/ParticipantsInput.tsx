@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 
 import { useAppDispatch } from '../../actions/redux';
-import { IUser } from '../../types/user';
+import { IParticipant, IUser } from '../../types/user';
 import { ClickOutside } from '../../utils/functions';
 
 import styles from './ParticipantsInput.module.sass';
@@ -31,7 +31,7 @@ const users = [
 ]
 
 const ParticipantsInput = () => {
-    const [picked, setPicked] = useState<IUser[]>([]);
+    const [picked, setPicked] = useState<IParticipant[]>([]);
     const [isOpen, setOpen] = useState(false);
     const [searchVal, setSearchVal] = useState('');
 
@@ -46,24 +46,24 @@ const ParticipantsInput = () => {
         setOpen(true);
     };
 
-    const handlePickUser = (user: IUser) => {
-        setPicked((prev: IUser[]) => ([...prev, user]))
+    const handlePickUser = (user: IParticipant) => {
+        setPicked((prev) => ([...prev, user]))
     }
 
     const handleUnPickUser = (lastName: string) => {
-        setPicked((prev: IUser[]) => prev.filter(u => u.lastName !== lastName))
+        setPicked((prev) => prev.filter(u => u.user.lastName !== lastName))
     }
 
     return (
         <div className={styles.dropdown}>
             <div className={styles.list}>
-                {picked.map((user: IUser) => (
-                    <div className={styles.picked_user} key={user.firstName}>
-                        <img className={styles.image} src={user.avatar} alt="" />
+                {picked.map((user) => (
+                    <div className={styles.picked_user} key={user.user.firstName}>
+                        <img className={styles.image} src={user.user.avatar} alt="" />
                         <span>
-                            {user.firstName}
+                            {user.user.firstName}
                         </span>
-                        <button onClick={() => handleUnPickUser(user.lastName)} className={styles.close}>
+                        <button onClick={() => handleUnPickUser(user.user.lastName)} className={styles.close}>
                             <img src={x} alt="" />
                         </button>
                     </div>
@@ -81,7 +81,7 @@ const ParticipantsInput = () => {
             {isOpen && (
                 <div ref={list} className={styles.content}>
                     {users.map(user => (
-                        !picked.find(p => p.firstName === user.firstName) && (
+                        !picked.find(p => p.user.lastName !== user.lastName) && (
                             <button onClick={() => handlePickUser(user)} key={user.firstName} className={styles.user}>
                                 <img className={styles.image} src={user.avatar} alt="" />
                                 <div className={styles.name}>

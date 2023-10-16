@@ -1,10 +1,11 @@
-import Participants from '../participants/Participants';
+import { NavLink } from 'react-router-dom';
+import { useSortable } from "@dnd-kit/sortable";
+
+import { CSS } from "@dnd-kit/utilities";
+import { useAppSelector } from '../../actions/redux';
+import { ITask } from '../../types/task';
 
 import styles from './TaskBlock.module.sass';
-import { ITask } from '../../types/task';
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { NavLink } from 'react-router-dom';
 
 interface TaskBlockProps {
     task: ITask,
@@ -12,6 +13,8 @@ interface TaskBlockProps {
 }
 
 const TaskBlock = ({ task, view = false }: TaskBlockProps) => {
+    const projectId = useAppSelector(state => state.commonReducer.projectId);
+
     const {
         setNodeRef,
         attributes,
@@ -50,7 +53,7 @@ const TaskBlock = ({ task, view = false }: TaskBlockProps) => {
             {...attributes}
             {...listeners}
         >
-            <NavLink className={styles.name} to={'/tasks/12/details/' + task.id}>
+            <NavLink className={styles.name} to={`/project/${projectId}/details/` + task.id}>
                 {task.title}
             </NavLink>
             <div className={styles.tags}>
@@ -64,9 +67,9 @@ const TaskBlock = ({ task, view = false }: TaskBlockProps) => {
                     Backlog
                 </div>
             </div>
-            <div>
+            {/* <div>
                 <Participants max={2} participants={task.responsible} id={task.id} type="task" />
-            </div>
+            </div> */}
 
         </div>
     );

@@ -64,7 +64,7 @@ const Header = () => {
 
                     {isOpen && (
                         <div className={styles.user_block}>
-                            <NavLink to='/project/settings' onClick={() => setOpen(false)}>
+                            <NavLink  to='/tasks/settings' onClick={() => setOpen(false)}>
                                 <img src={settings} alt="" />
                                 Settings
                             </NavLink>

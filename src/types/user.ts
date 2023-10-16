@@ -1,9 +1,12 @@
+import { IStage } from "./stage"
+
 export interface IUser {
     id: number
     firstName: string,
     lastName: string,
     email: string,
-    avatar: string
+    avatar: string,
+    stages: IStage[] 
 }
 
 export interface IRegUser {

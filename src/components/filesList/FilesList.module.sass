@@ -1,0 +1,37 @@
+.files
+    display: flex
+    flex-direction: column
+
+.file
+    display: flex
+    align-items: center
+    background-color: #E9EBF0
+    padding: 6px 12px
+    position: relative
+    border-radius: 4px
+    height: 40px
+    margin-bottom: 4px
+    &_image
+        max-height: 30px
+        height: 100%
+        width: 40px
+        display: flex
+        align-items: center
+        justify-content: center
+        margin-right: 24px
+        img
+            // height: 100%
+            max-width: 100%
+            max-height: 100%
+    &_remove
+        position: absolute
+        right: 12px
+        top: 50%
+        transform: translate(0, -50%)
+        width: 20px
+        height: 20px
+        img
+            width: 100%
+            height: 100%
+    &_name
+        color: #000

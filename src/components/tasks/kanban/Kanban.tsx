@@ -236,10 +236,6 @@ const Kanban = () => {
             </div>
 
             <Outlet />
-
-            {/* <Routes>
-          
-            </Routes> */}
         </div>
 
     )

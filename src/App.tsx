@@ -32,6 +32,7 @@ function App() {
       <Routes>
         <Route path='reg' element={<Registration />} />
         <Route path='login' element={<Login />} />
+        <Route path='invite/:token' element={<Login />} />
         <Route
           path='/'
           element={

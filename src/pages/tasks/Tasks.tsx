@@ -31,7 +31,7 @@ const Tasks = () => {
             <TaskNavigation />
 
             <div className={styles.wrapper}>
-                <Outlet />
+                <Outlet context={project} />
             </div>
         </div>
     );

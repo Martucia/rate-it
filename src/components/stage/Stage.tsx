@@ -23,9 +23,7 @@ const Stage = ({ stage, tasks }: StageProps) => {
     const [isPopupOpen, setPopupOpen] = useState(false);
     const [isEditing, setEditing] = useState(false);
 
-    const tasksIds = useMemo(() => {
-        return tasks.map((task) => task.id);
-    }, [tasks]);
+    const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
     const {
         setNodeRef,

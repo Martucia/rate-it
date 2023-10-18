@@ -27,6 +27,7 @@ import { moveTasks } from '../../../actions/tasks';
 import empty from '@images/empty.png'
 import { commonSlice } from '../../../store/reducers/commonSlice';
 import { Outlet } from 'react-router-dom';
+import { useScroll } from '../../../hooks/scroll';
 
 const Kanban = () => {
     const { tasksView, isStageCreateOpen } = useAppSelector(state => state.commonReducer);
@@ -52,14 +53,18 @@ const Kanban = () => {
     const [activeStage, setActiveStage] = useState<IStage | null>(null);
     const [activeTask, setActiveTask] = useState<ITask | null>(null);
 
-    const [isScrolledToLeft, setIsScrolledToLeft] = useState(true);
-    const [isScrolledToRight, setIsScrolledToRight] = useState(true);
-
     const dispatch = useAppDispatch();
 
     const tasksSelector = useAppSelector<ITask[]>(state => state.taskReducer.tasks);
 
     const [tasks, setTasks] = useState<ITask[]>([]);
+
+    const {
+        mouseEnter,
+        mouseLeave,
+        isScrolledToLeft,
+        isScrolledToRight
+    } = useScroll(kanbanRef);
 
     useEffect(() => {
         if (tasksSelector) {
@@ -96,44 +101,6 @@ const Kanban = () => {
         })
     );
 
-    let scrollInterval: number | null = null;
-
-    const handleScroll = (direction: "left" | "right") => {
-        const scrollAmount = direction === "right" ? 5 : -5;
-        if (kanbanRef.current) {
-            kanbanRef.current.scrollLeft += scrollAmount;
-
-
-            // const isScrolledLeft = kanbanRef.current.scrollLeft > 0;
-            // // const isScrolledRight = kanbanRef.current.scrollLeft + kanbanRef.current.clientWidth < kanbanRef.current.scrollWidth;
-
-            // if (isScrolledToLeft !== isScrolledLeft) {
-            //     setIsScrolledToLeft(isScrolledLeft);
-            // }
-        }
-    };
-
-    const handleMouseEnter = (direction: "left" | "right") => {
-        if (!scrollInterval) {
-            scrollInterval = window.setInterval(() => handleScroll(direction), 20);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        if (scrollInterval) {
-            window.clearInterval(scrollInterval);
-            scrollInterval = null;
-        }
-    };
-
-
-    // useEffect(() => {
-    //     if (kanbanRef.current && stages) {
-    //         setIsScrolledToLeft(kanbanRef.current.scrollLeft > 0);
-    //         setIsScrolledToRight(kanbanRef.current.scrollWidth !== kanbanRef.current.clientWidth);
-    //     }
-    // }, [stages])
-
     useEffect(() => {
         if (isStageCreateOpen && kanbanRef.current) {
             kanbanRef.current.scrollLeft = kanbanRef.current.scrollWidth;
@@ -154,20 +121,20 @@ const Kanban = () => {
 
     return (
         <div className={styles.kanban_wrapper}>
-            {isScrolledToLeft && (
+            {!isScrolledToLeft && (
                 <button
-                    onMouseEnter={() => handleMouseEnter("left")}
-                    onMouseLeave={handleMouseLeave}
+                    onMouseEnter={() => mouseEnter("left")}
+                    onMouseLeave={mouseLeave}
                     className={`${styles.scroll} ${styles.to_left}`}
                 >
                     {"<"}
                 </button>
             )}
 
-            {isScrolledToRight && (
+            {!isScrolledToRight && (
                 <button
-                    onMouseEnter={() => handleMouseEnter("right")}
-                    onMouseLeave={handleMouseLeave}
+                    onMouseEnter={() => mouseEnter("right")}
+                    onMouseLeave={mouseLeave}
                     className={`${styles.scroll} ${styles.to_right}`}
                 >
                     {">"}

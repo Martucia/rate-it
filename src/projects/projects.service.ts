@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Participant } from './entities/participant.entity';
 import { MailService } from 'src/mail/mail.service';
+import { Invitation } from './entities/invitation.entity';
+import { inviteGenerate } from 'src/common/utils/tokenGenerate';
 
 @Injectable()
 export class ProjectsService {
@@ -15,6 +16,8 @@ export class ProjectsService {
     private readonly projectsRepository: Repository<Project>,
     @InjectRepository(Participant)
     private readonly participantsRepository: Repository<Participant>,
+    @InjectRepository(Invitation)
+    private readonly invitationsRepository: Repository<Invitation>,
     private readonly mailService: MailService
   ) { }
 
@@ -47,7 +50,7 @@ export class ProjectsService {
           user: { id: user.id }
         }]
       },
-      relations: ['participants', 'stages', 'participants.user', 'tags']
+      relations: ['participants', 'stages', 'participants.user', 'tags', 'invitations']
     });
 
     const projectsOut = projects.map(pr => ({
@@ -72,27 +75,49 @@ export class ProjectsService {
     return project;
   }
 
-  async invite(id: number, participants: Participant[]) {
+  async invite(projectId: number, participants: { email: string }[]) {
     const project = await this.projectsRepository.findOne({
-      where: { id },
-      relations: { participants: true }
+      where: { id: projectId },
+      relations: {
+        participants: {
+          user: true
+        }
+      }
     })
 
     if (!project) {
       throw new NotFoundException("No project with this id was found");
     }
 
-    const result = await this.mailService.sendMail({
-      to: "shlapak.marta@gmail.com",
-      subject: "Testing Nest MailerModule ✔",
-      text: "Helouka",
-      from: "imarta.shlapak@gmail.com"
-    })
+    // const result = await this.mailService.sendMail({
+    //   to: "shlapak.marta@gmail.com",
+    //   subject: "Testing Nest MailerModule ✔",
+    //   text: "Helouka",
+    //   from: "imarta.shlapak@gmail.com"
+    // })
 
-    console.log("result", result)
+
+    const existingEmails = project.participants.map(participant => participant.user.email);
+    const newEmails = participants.filter(participant => !existingEmails.includes(participant.email));
+
+    if (newEmails.length === 0) return {
+      message: "There is no one to invite"
+    };
+
+    const invitations = await Promise.all(newEmails.map(async (participant) => {
+      const token = inviteGenerate();
+      const invitation = await this.invitationsRepository.save({
+        project: { id: projectId },
+        email: participant.email,
+        token
+      });
+      return invitation;
+    }));
+
+    console.log("invitations", invitations)
 
     return {
-      message: "Lol"
+      message: "invitations sent successfully"
     }
   }
 

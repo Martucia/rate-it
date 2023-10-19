@@ -7,20 +7,11 @@ export class Participant {
     @PrimaryGeneratedColumn()
     id: number
 
-    // @OneToOne(() => User, (user) => user.id)
-    // @JoinTable()
-    // user: User
-
     @ManyToOne(() => User, (user) => user.participants)
     @JoinColumn()
     user: User
-    
-    // @JoinTable()
-    // @Column()
-    // userId: number
 
     @ManyToOne(() => Project, (project) => project.participants)
-    // @JoinTable()
     project: Project
 
     @Column()

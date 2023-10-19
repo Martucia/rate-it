@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { verify } from 'argon2';
 import { JwtService } from '@nestjs/jwt';
-import { IUser, IUserLogin } from 'src/types/types';
+import { IUser, IUserLogin } from 'src/common/types/types';
 import { User } from 'src/users/entities/user.entity';
 
 @Injectable()

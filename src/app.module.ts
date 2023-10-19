@@ -14,7 +14,6 @@ import { FileController } from './file/file.controller';
 import { CommentsModule } from './comments/comments.module';
 import { FileModule } from './file/file.module';
 import { MailModule } from './mail/mail.module';
-import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -48,7 +47,6 @@ import { NotificationsModule } from './notifications/notifications.module';
     CommentsModule,
     FileModule,
     MailModule,
-    NotificationsModule,
   ],
   controllers: [AppController, FileController],
   providers: [AppService],

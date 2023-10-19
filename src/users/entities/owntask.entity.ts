@@ -2,7 +2,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGene
 import { User } from "./user.entity";
 import { Task } from "src/tasks/entities/task.entity";
 import { Stage } from "src/stages/entities/stage.entity";
-import { Notification } from "src/notifications/entities/notification.entity";
 
 @Entity()
 export class OwnTask {
@@ -18,7 +17,4 @@ export class OwnTask {
 
     @ManyToOne(() => Stage, (stage) => stage.tasks)
     stage: Stage
-
-    @OneToMany(() => Notification, (notification) => notification.task)
-    notifications: Notification[]
 }

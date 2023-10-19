@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from './entities/task.entity';
-import { IUser } from 'src/types/types';
+import { IUser } from 'src/common/types/types';
 import { User } from 'src/users/entities/user.entity';
 import { CommentsService } from 'src/comments/comments.service';
 
@@ -69,7 +69,8 @@ export class TasksService {
       relations: {
         responsible: true,
         stage: true,
-        tags: true
+        tags: true,
+        project: true
       },
       select: [
         'index',
@@ -78,7 +79,8 @@ export class TasksService {
         'responsible',
         'stage',
         'id',
-        'tags'
+        'tags',
+        'project'
       ]
     });
 

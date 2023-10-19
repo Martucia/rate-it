@@ -7,10 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { Participant } from './entities/participant.entity';
 import { MailModule } from 'src/mail/mail.module';
+import { Invitation } from './entities/invitation.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, Participant]),
+    TypeOrmModule.forFeature([Project, Participant, Invitation]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

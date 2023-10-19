@@ -2,9 +2,10 @@
 import { Stage } from "src/stages/entities/stage.entity";
 import { Task } from "src/tasks/entities/task.entity";
 // import { User } from "src/users/entities/user.entity";
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable, JoinColumn } from "typeorm";
 import { Participant } from "./participant.entity";
 import { Tag } from "src/tags/entities/tag.entity";
+import { Invitation } from "./invitation.entity";
 
 @Entity()
 export class Project {
@@ -26,11 +27,15 @@ export class Project {
 
     @OneToMany(() => Participant, (participant) => participant.project, { onDelete: 'CASCADE' })
     participants: Participant[]
-    
+
     @OneToMany(() => Stage, (stage) => stage.project, { onDelete: 'CASCADE' })
     // @JoinTable()
     stages: Stage[]
 
     @OneToMany(() => Tag, (tag) => tag.project, { onDelete: 'CASCADE' })
     tags: Tag[]
+
+    @OneToMany(() => Invitation, (invitation) => invitation.project, { onDelete: 'CASCADE' })
+    @JoinColumn()
+    invitations: Invitation[]
 }

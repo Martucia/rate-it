@@ -11,8 +11,6 @@ interface FileBtnProps {
 }
 
 const FileBtn: React.FC<FileBtnProps> = ({ setFiles, style, fileInputRef }) => {
-
-
     const handleFileInputAdd = (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {

@@ -1,22 +1,18 @@
-import { useState } from 'react';
-import styles from './TagInput.module.sass';
-import { IParticipant } from '../../types/user';
-import { BASE_URL } from '../../utils/constants';
+import { useState, FC } from 'react';
+import { IParticipant } from '../../../types/user';
 import x from '@images/x.svg'
-import { useAppSelector } from '../../actions/redux';
+import styles from './TagInput.module.sass'
+import s from '../index.module.sass';
 
 interface TagInputProps {
-    // users: IParticipant[],
-    users: { email: string }[] // | IParticipant[]
+    users: { email: string }[]
     setUsers: Function,
     check: (email: string) => boolean
 }
 
-const TagInput = ({ users, setUsers, check }: TagInputProps) => {
+const TagInput: FC<TagInputProps> = ({ users, setUsers, check }) => {
     const [value, setValue] = useState("");
     const [error, setError] = useState("");
-
-    const id = useAppSelector(state => state.userReducer.user?.id);
 
     const handleChangeValue = (e: any) => {
         setValue(e.target.value);
@@ -54,17 +50,10 @@ const TagInput = ({ users, setUsers, check }: TagInputProps) => {
             <div className={styles.container}>
                 {users.map(user => (
                     <div className={styles.user} key={user.email}>
-                        {/* {user.user?.avatar && (
-                            <div className={styles.avatar}>
-                                <img src={`${BASE_URL}/file/${user.user.avatar}`} alt="" />
-                            </div>
-                        )} */}
                         <span className={styles.text}>{user.email}</span>
-                        {/* {id !== user.id && ( */}
                         <button onClick={() => handleRemoveUser(user.email)} className={styles.remove}>
                             <img src={x} alt="" />
                         </button>
-                        {/* )} */}
 
                     </div>
                 ))}
@@ -78,7 +67,7 @@ const TagInput = ({ users, setUsers, check }: TagInputProps) => {
                     onKeyDown={handlePressEnter}
                 />
             </div>
-            <div className={styles.error}>
+            <div className={s.error}>
                 {error}
             </div>
         </>

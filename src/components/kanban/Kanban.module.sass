@@ -1,7 +1,4 @@
 .kanban_wrapper
-    // width: 100%
-    // max-width: 100%
-    // overflow: hidden
     height: 100%
     position: relative
     padding-bottom: 4px
@@ -9,7 +6,6 @@
 .kanban
     display: flex
     gap: 24px
-    // grid-template-columns: repeat(auto-fill, minmax(300px, 400px))
     overflow-x: auto
     padding: 0 30px
     height: 100%
@@ -33,7 +29,6 @@
     height: 100%
     display: flex
     align-items: center
-    // padding-top: 120px
     justify-content: center
     flex-direction: column
     .img
@@ -68,11 +63,11 @@
     background: #80808022
     z-index: 10
     // transform: translate(0, -50%)
-    &.to_left
+    &.left
         left: 0
         border-radius: 0 60px 60px 0
         padding: 30px 30px 30px 20px
-    &.to_right
+    &.right
         right: 0
         border-radius: 60px 0 0 60px
         padding: 30px 20px 30px 30px

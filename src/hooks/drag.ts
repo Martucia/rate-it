@@ -14,9 +14,15 @@ import { moveStages } from "../actions/stages";
 import { moveTasks } from "../actions/tasks";
 import { arrayMove } from "@dnd-kit/sortable";
 
-export function useDrag(projectId: number | null) {
-    const [stages, setStages] = useState<IStage[]>([]);
-    const [tasks, setTasks] = useState<ITask[]>([]);
+interface useDragProps {
+    projectId: number | null,
+    stages: IStage[],
+    tasks: ITask[],
+    setStages: React.Dispatch<React.SetStateAction<IStage[]>>,
+    setTasks: React.Dispatch<React.SetStateAction<ITask[]>>
+}
+
+export function useDrag({ projectId, setStages, setTasks, stages, tasks }: useDragProps) {
 
     const [activeStage, setActiveStage] = useState<IStage | null>(null);
     const [activeTask, setActiveTask] = useState<ITask | null>(null);
@@ -30,6 +36,8 @@ export function useDrag(projectId: number | null) {
             },
         })
     );
+
+
 
     const stagesId = useMemo(() => stages.map((stage: IStage) => stage.id), [stages]);
 

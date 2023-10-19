@@ -7,7 +7,7 @@ import s from '../index.module.sass';
 
 import x from '@images/x.svg';
 import { commonSlice } from '../../../store/reducers/commonSlice';
-import TagInput from '../../tagInput/TagInput';
+import TagInput from '../../../ui/inputs/tagInput/TagInput';
 import { useEffect, useState } from 'react';
 import { IParticipant } from '../../../types/user';
 import { inviteParticipants } from '../../../actions/projects';

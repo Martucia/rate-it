@@ -9,26 +9,6 @@ import styles from './ParticipantsInput.module.sass';
 import avatar from '@images/lis.jpg';
 import x from '@images/x.svg';
 
-const users = [
-    {
-        firstName: "Максим",
-        lastName: "Слізняк",
-        avatar: avatar,
-        email: "gamermax85@gmail.com"
-    },
-    {
-        firstName: "Ростік",
-        lastName: "Лісняк",
-        avatar: avatar,
-        email: "gamermax85@gmail.com"
-    },
-    {
-        firstName: "Сергій",
-        lastName: "Ліс",
-        avatar: avatar,
-        email: "gamermax85@gmail.com"
-    },
-]
 
 const ParticipantsInput = () => {
     const [picked, setPicked] = useState<IParticipant[]>([]);
@@ -80,7 +60,7 @@ const ParticipantsInput = () => {
 
             {isOpen && (
                 <div ref={list} className={styles.content}>
-                    {users.map(user => (
+                    {/* {users.map(user => (
                         !picked.find(p => p.user.lastName !== user.lastName) && (
                             <button onClick={() => handlePickUser(user)} key={user.firstName} className={styles.user}>
                                 <img className={styles.image} src={user.avatar} alt="" />
@@ -89,7 +69,7 @@ const ParticipantsInput = () => {
                                 </div>
                             </button>
                         )
-                    ))}
+                    ))} */}
                 </div>
             )}
 

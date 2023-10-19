@@ -5,7 +5,7 @@ import { BASE_URL } from '../../../utils/constants';
 import { useAppDispatch, useAppSelector } from '../../../actions/redux';
 import emoji from '@images/emoji.svg'
 import { createComment, updateComment } from '../../../actions/comments';
-import FileBtn from '../../fileBtn/FileBtn';
+import FileBtn from '../../../ui/fileBtn/FileBtn';
 import FilesList from '../../filesList/FilesList';
 import { IComment, ICommentCreate } from '../../../types/comment';
 import EmojiPopup from '../../popups/emojiPopup/EmojiPopup';

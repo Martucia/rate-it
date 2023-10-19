@@ -11,7 +11,7 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { IStage } from '../../types/stage';
 import StagePopup from '../popups/stagePopup/StagePopup';
-import CreateUpdateStage from './CreateUpdateStage';
+import CreateUpdateStage from './Stage.Create.Update';
 
 interface StageProps {
     tasks: ITask[],
@@ -40,9 +40,16 @@ const Stage = ({ stage, tasks }: StageProps) => {
         }
     });
 
-    const filteredTasks = tasks
-        .filter(task => task.stage.id === stage.id)
-        .sort((a, b) => a.index - b.index);
+    const filterTasks = () => {
+        const filteredTasks = tasks
+            .filter(task => task.stage.id === stage.id)
+            .sort((a, b) => a.index - b.index);
+
+        return filteredTasks;
+
+    }
+
+    const filteredTasks = useMemo(filterTasks, [tasks])
 
 
     const style = {

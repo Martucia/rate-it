@@ -6,7 +6,7 @@ import { commonSlice } from '../../store/reducers/commonSlice';
 
 import Title from '../title/Title';
 import Participants from '../participants/Participants';
-import SearchInput from '../searchInput/SearchInput';
+import SearchInput from '../../ui/inputs/searchInput/SearchInput';
 
 import styles from './TaskNavigation.module.sass';
 

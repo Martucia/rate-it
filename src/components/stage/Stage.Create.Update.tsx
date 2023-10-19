@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../actions/redux';
 import { commonSlice } from '../../store/reducers/commonSlice';
 import { updateStage } from '../../actions/stages';
 
-interface CreateUpdateStageProps {
+interface StageCreateUpdate {
     create?: (data: any) => void,
     id?: number,
     oldColor?: string,
@@ -17,7 +17,7 @@ interface CreateUpdateStageProps {
     closeEdit?: () => void
 }
 
-const CreateUpdateStage = ({ create, closeEdit, id, oldColor = '#fff', oldBackground = '#6fb0e7', oldName = 'Stage name' }: CreateUpdateStageProps) => {
+const StageCreateUpdate = ({ create, closeEdit, id, oldColor = '#fff', oldBackground = '#6fb0e7', oldName = 'Stage name' }: StageCreateUpdate) => {
     const [background, setBackground] = useState(oldBackground);
     const [color, setColor] = useState(oldColor);
     const [name, setName] = useState(oldName);
@@ -143,4 +143,4 @@ const CreateUpdateStage = ({ create, closeEdit, id, oldColor = '#fff', oldBackgr
     );
 }
 
-export default CreateUpdateStage;
+export default StageCreateUpdate;

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import { ClickOutside } from '../../utils/functions';
 
-import SearchInput from '../searchInput/SearchInput';
+import SearchInput from '../../ui/inputs/searchInput/SearchInput';
 import Avatar from '../avatar/Avatar';
 
 import styles from './Header.module.sass';

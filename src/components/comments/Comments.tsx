@@ -4,11 +4,11 @@ import styles from './Comments.module.sass';
 
 import Comment from './comment/Comment';
 import { IComment, ICommentCreate } from '../../types/comment';
-import CommentInput from './commentInput.tsx/CommentInput';
+import CommentInput from './comment/Comment.Input';
 import io, { Socket } from 'socket.io-client';
 import { SOCKET_URL } from '../../utils/constants';
 import { getSocketConfig } from '../../utils/functions';
-import { useConnectSocket } from '../../hooks/useConnectSocket';
+import { useConnectSocket } from '../../hooks/socket';
 
 interface CommentsProps {
     id: number,
@@ -26,8 +26,6 @@ const Comments = ({ id, taskComments }: CommentsProps) => {
     }
 
     // useConnectSocket();
-
-
 
     // useEffect(() => {
     //     const options = getSocketConfig();

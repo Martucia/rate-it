@@ -13,7 +13,6 @@ const Tasks = () => {
     const dispatch = useAppDispatch();
     const { projectId } = useParams();
 
-    // const project = useAppSelector(state => state.projectReducer.projects.find(pr => projectId ? pr.id === +projectId : null));
     const project = useAppSelector(state => state.projectReducer.projects.find(pr => String(pr.id) === projectId));
 
     useEffect(() => {

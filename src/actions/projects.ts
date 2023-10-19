@@ -26,6 +26,11 @@ export const getAllProjects = () => async (dispatch: AppDispatch) => {
 
 export const createProject = (data: IProjectCreate) => async (dispatch: AppDispatch) => {
     try {
+        if (!data.name || data.name.length === 0) {
+            dispatch(projectsSlice.actions.projectFetchingError('Enter the name of the project'));
+            return false;
+        }
+
         dispatch(projectsSlice.actions.projectFetching());
 
         const response = await axios.post<IProject>(`${BASE_URL}/projects`, data, getConfig());
@@ -39,6 +44,8 @@ export const createProject = (data: IProjectCreate) => async (dispatch: AppDispa
         return response.data.id;
     } catch (e: any) {
         dispatch(projectsSlice.actions.projectFetchingError(e.response.data.message || e.message));
+
+        return false;
     }
 }
 

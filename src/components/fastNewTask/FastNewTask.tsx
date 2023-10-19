@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Input from '../input/Input';
+import Input from '../../ui/inputs/input/Input';
 import styles from './FastNewTask.module.sass';
 import { ClickOutside } from '../../utils/functions';
 import { useAppDispatch, useAppSelector } from '../../actions/redux';

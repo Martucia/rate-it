@@ -6,8 +6,6 @@ interface TogglekProps {
 }
 
 const Toggle = ({ isActive, setActive }: TogglekProps) => {
-
-
     return (
         <label className={styles.switch} onClick={() => setActive(!isActive)}>
             <input type="checkbox" checked={isActive} />

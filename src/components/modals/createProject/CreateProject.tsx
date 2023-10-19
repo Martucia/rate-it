@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../actions/redux';
 import { createProject } from '../../../actions/projects';
 import { commonSlice } from '../../../store/reducers/commonSlice';
 
-import Input from '../../input/Input';
+import Input from '../../../ui/inputs/input/Input';
 import Overflow from '../../overflow/Overflow';
 
 
@@ -31,9 +31,11 @@ const CreateProject = () => {
     }
 
     const handleCreateProject = async () => {
-        let id = await dispatch(createProject({ name }));
+        const id = await dispatch(createProject({ name }));
 
-        navigate('/project/' + id);
+        if (id) {
+            navigate('/project/' + id);
+        }
     }
 
     return (
@@ -54,8 +56,6 @@ const CreateProject = () => {
                     style={{ borderBottom: "1px solid #aaa" }}
                     onEnterDown={handleCreateProject}
                 />
-
-                {/* <ParticipantsInput /> */}
 
                 {error && (
                     <div className={s.error}>

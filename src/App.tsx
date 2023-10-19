@@ -12,7 +12,7 @@ import ParticipantsChange from './components/modals/participantsChange/Participa
 import Layout from './components/layout/Layout';
 import AuthRequire from './hoc/AuthRequire';
 import Soon from './pages/systemPages/Soon';
-import Kanban from './components/tasks/kanban/Kanban';
+import Kanban from './components/kanban/Kanban';
 import Task from './components/modals/task/Task';
 
 function App() {

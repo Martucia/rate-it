@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { ITask } from '../../types/task';
 import styles from './Kanban.module.sass';
-import TaskBlock from '../taskBlock/TaskBlock';
+import TaskBlock from '../modals/task/Task.Block';
 
 interface ListProps {
     tasks: ITask[]

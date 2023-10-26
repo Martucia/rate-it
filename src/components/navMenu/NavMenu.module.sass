@@ -35,6 +35,19 @@ $padding: 30px
     padding: 16px $padding
     overflow-y: auto
 
+.dots
+    display: none
+    justify-content: space-between
+    align-items: center
+    gap: 3px
+    padding: 10px 4px
+    height: 100%
+    span
+        width: 3px
+        height: 3px
+        border-radius: 100%
+        background: #98A2B2
+
 .link, .button
     color: #1F2633
     display: flex
@@ -46,6 +59,9 @@ $padding: 30px
     width: 100%
     position: relative
     padding: 10px 0
+    &:hover
+        .dots
+            display: flex
 
 .border
     display: none

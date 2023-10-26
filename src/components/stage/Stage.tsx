@@ -1,17 +1,19 @@
 import { useMemo, useState } from 'react';
 import { ITask } from '../../types/task';
 
-import TaskBlock from '../taskBlock/TaskBlock';
+import TaskBlock from '../modals/task/Task.Block';
 
 import styles from './Stage.module.sass';
 
 import plus from '@images/pl.svg'
-import FastNewTask from '../fastNewTask/FastNewTask';
+import TaskCreate from '../modals/task/Task.Create';
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { IStage } from '../../types/stage';
-import StagePopup from '../popups/stagePopup/StagePopup';
+import Popup from './Stage.Popup';
 import CreateUpdateStage from './Stage.Create.Update';
+import { sortItems } from '../../hooks/sort';
+import { filterTasksByStageId } from '../../hooks/filter';
 
 interface StageProps {
     tasks: ITask[],
@@ -40,17 +42,7 @@ const Stage = ({ stage, tasks }: StageProps) => {
         }
     });
 
-    const filterTasks = () => {
-        const filteredTasks = tasks
-            .filter(task => task.stage.id === stage.id)
-            .sort((a, b) => a.index - b.index);
-
-        return filteredTasks;
-
-    }
-
-    const filteredTasks = useMemo(filterTasks, [tasks])
-
+    const filteredTasks = useMemo(() => sortItems(filterTasksByStageId(tasks, stage.id), 'index'), [tasks]);
 
     const style = {
         transition,
@@ -85,7 +77,7 @@ const Stage = ({ stage, tasks }: StageProps) => {
         />
     }
 
-    return (
+    if (filteredTasks) return (
         <>
             <div
                 id={String(stage.id)}
@@ -111,7 +103,7 @@ const Stage = ({ stage, tasks }: StageProps) => {
                         <span style={{ background: stage.color }}></span>
                     </button>
 
-                    {isPopupOpen && <StagePopup
+                    {isPopupOpen && <Popup
                         close={() => setPopupOpen(false)}
                         id={stage.id}
                         setEdit={() => {
@@ -132,7 +124,7 @@ const Stage = ({ stage, tasks }: StageProps) => {
                 </div>}
 
                 {isTaskCreateOpen
-                    ? <FastNewTask
+                    ? <TaskCreate
                         close={() => setTaskCreateOpen(false)}
                         stageId={stage.id}
                     />

@@ -9,6 +9,7 @@ import { ILogUser } from '../../types/user';
 import AuthInput from './AuthInput';
 
 import styles from './index.module.sass';
+import Error from '../../ui/error/Error';
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -71,9 +72,7 @@ const Login = () => {
                                     />
                             )}
 
-                            <div className={styles.error} style={{ fontSize: "16px", marginTop: "20px" }}>
-                                {error}
-                            </div>
+                            <Error error={error} style={{ fontSize: "14px", marginTop: "20px" }} />
 
                             <button disabled={isLoading} className={styles.submit} type="submit">
                                 Login

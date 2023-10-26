@@ -7,6 +7,7 @@ import styles from './Title.module.sass';
 
 import done from '@images/done.svg'
 import x from '@images/x.svg';
+import Error from '../../../../../ui/error/Error';
 
 interface TitleProps {
     title: string,
@@ -74,10 +75,8 @@ const Title = ({ title, taskId }: TitleProps) => {
                             </button>
                         </div>
                     </div>
-
-                    <span className={styles.error}>
-                        {error}
-                    </span>
+                    
+                    <Error error={error} />
                 </>
                 : <span onClick={() => setEditing(true)}>
                     {title}

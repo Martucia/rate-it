@@ -2,7 +2,7 @@ import { MouseEventHandler } from 'react';
 
 import styles from './NavMenu.module.sass';
 
-import NavMenuSection from './NavMenuSection';
+import NavMenuSection from './NavMenu.Section';
 
 import tag from '@images/tag.svg';
 import open from '@images/menu_open.svg';
@@ -43,7 +43,7 @@ const NavMenu = ({ toggle, isOpen }: NavMenuProps) => {
 
             <nav className={styles.nav}>
                 {sections.map(section => <NavMenuSection key={section.name} section={section} />)}
-                <NavMenuSection key={projectSection.name} section={projectSection} />
+                <NavMenuSection key={projectSection.name} section={projectSection} type='projects' />
             </nav>
         </div>
     );

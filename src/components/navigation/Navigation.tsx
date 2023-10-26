@@ -4,11 +4,11 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../actions/redux';
 import { commonSlice } from '../../store/reducers/commonSlice';
 
-import Title from '../title/Title';
+import Title from './Navigation.Title';
 import Participants from '../participants/Participants';
 import SearchInput from '../../ui/inputs/searchInput/SearchInput';
 
-import styles from './TaskNavigation.module.sass';
+import styles from './Navigation.module.sass';
 
 import board from '@images/board.svg'
 import list from '@images/list.svg'
@@ -20,7 +20,9 @@ const TaskNavigation = () => {
     const view = useAppSelector(state => state.commonReducer.tasksView);
     const projectId = useAppSelector(state => state.commonReducer.projectId);
 
-    const participants = useAppSelector(state => state.projectReducer.projects.find(project => project.id === projectId)?.participants);
+    // const participants = useAppSelector(state => state.projectReducer.projects.find(project => project.id === projectId)?.participants);
+
+    const project = useAppSelector(state => state.projectReducer.projects.find(project => project.id === projectId));
 
     const setClass = ({ isActive }: { isActive: boolean }) => (isActive ? `${styles.active} ${styles.link}` : styles.link);
 
@@ -37,10 +39,10 @@ const TaskNavigation = () => {
         }))
     }
 
-    return (
+    if (project) return (
         <>
             <div className={styles.navigation}>
-                <Title isEdited={true} projectId={projectId} />
+                <Title isEdited={true} projectId={project.id} title={project.name} />
 
                 <nav className={styles.nav}>
                     <NavLink to={`/project/${projectId}/`} className={setClass}>
@@ -60,7 +62,7 @@ const TaskNavigation = () => {
                     </NavLink>
                 </nav>
 
-                {projectId && <Participants type="project" id={projectId} participants={participants || []} max={5} />}
+                {projectId && <Participants size="large" type="project" id={projectId} participants={project?.participants || []} max={5} />}
 
             </div>
             <div className={styles.filter}>

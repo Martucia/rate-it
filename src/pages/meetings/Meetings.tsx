@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styles from './Meetings.module.sass';
 
-import Title from '../../components/title/Title';
+import Title from '../../components/navigation/Navigation.Title';
 import MeetBlock from '../../components/meetBlock/MeetBlock';
 import Empty from '../systemPages/Empty';
 

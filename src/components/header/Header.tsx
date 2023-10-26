@@ -4,26 +4,20 @@ import { NavLink } from 'react-router-dom';
 import { ClickOutside } from '../../utils/functions';
 
 import SearchInput from '../../ui/inputs/searchInput/SearchInput';
-import Avatar from '../avatar/Avatar';
+import Avatar from '../../ui/avatar/Avatar';
 
 import styles from './Header.module.sass';
 
 import notification from '@images/notifications.svg';
-import settings from '@images/settings2.svg';
-import logout from '@images/logout.svg';
-import { useAppDispatch, useAppSelector } from '../../actions/redux';
-import { userSlice } from '../../store/reducers/userSlice';
+import { useAppSelector } from '../../actions/redux';
+
+import Popup from './Header.Popup';
 
 const Header = () => {
-    const [isOpen, setOpen] = useState(false);
+    const [isPopupOpen, setPopupOpen] = useState(false);
 
     const firstName = useAppSelector(state => state.userReducer.user?.firstName);
     const avatar = useAppSelector(state => state.userReducer.user?.avatar);
-
-    const dots = useRef<HTMLDivElement | null>(null);
-    const dispatch = useAppDispatch();
-
-    useEffect(() => ClickOutside({ element: dots, close: setOpen }), []);
 
     const setClass = ({ isActive }: { isActive: boolean }) => (isActive ? `${styles.active} ${styles.link}` : styles.link);
 
@@ -32,20 +26,14 @@ const Header = () => {
             <SearchInput paddingY={8} />
 
             <nav className={styles.nav}>
-                <NavLink to="/tasks" className={setClass}>
-                    Dashboard
+                <NavLink to="/tasks/" className={setClass}>
+                    Tasks
                 </NavLink>
-                <NavLink to="/tasks" className={setClass}>
-                    My Tasks
+                <NavLink to="/tasks/" className={setClass}>
+                    Meets
                 </NavLink>
-                <NavLink to="/tasks" className={setClass}>
-                    My Tasks
-                </NavLink>
-                <NavLink to="/tasks" className={setClass}>
-                    Reporting
-                </NavLink>
-                <NavLink to="/tasks" className={setClass}>
-                    Portfolios
+                <NavLink to="/tasks/" className={setClass}>
+                    Calendar
                 </NavLink>
                 <NavLink to="/tasks" className={setClass}>
                     Goals
@@ -57,22 +45,13 @@ const Header = () => {
                     <img src={notification} alt="notification" />
                 </button>
 
-                <div ref={dots} onClick={() => setOpen(prev => !prev)} className={styles.user}>
+                <div onClick={() => setPopupOpen(prev => !prev)} className={styles.user}>
                     <Avatar avatar={avatar} notifications={9} percentage={10} size={40} />
 
                     {firstName}
 
-                    {isOpen && (
-                        <div className={styles.user_block}>
-                            <NavLink  to='/tasks/settings' onClick={() => setOpen(false)}>
-                                <img src={settings} alt="" />
-                                Settings
-                            </NavLink>
-                            <button onClick={() => dispatch(userSlice.actions.logOut())}>
-                                <img src={logout} alt="" />
-                                Log out
-                            </button>
-                        </div>
+                    {isPopupOpen && (
+                        <Popup close={() => setPopupOpen(false)} />
                     )}
                 </div>
             </div>

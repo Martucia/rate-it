@@ -2,10 +2,13 @@ import { NavLink } from 'react-router-dom';
 import { useSortable } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
-import { useAppSelector } from '../../actions/redux';
-import { ITask } from '../../types/task';
+import { useAppSelector } from '../../../actions/redux';
+import { ITask } from '../../../types/task';
 
-import styles from './TaskBlock.module.sass';
+import styles from './Task.Block.module.sass';
+import Participants from '../../participants/Participants';
+
+import dayjs from 'dayjs';
 
 interface TaskBlockProps {
     task: ITask,
@@ -46,6 +49,10 @@ const TaskBlock = ({ task, view = false }: TaskBlockProps) => {
         );
     }
 
+    const deadline = task.deadline ? dayjs(task.deadline).format('MMMM D, HH:mm') : null;
+
+    const deadlineStyle = dayjs(task.deadline) > dayjs() ? {} : { color: '#dd0000', opacity: 1, fontWeight: 600 };
+
     return (
         <div
             className={`${styles.task} ${view && styles.task_list}`}
@@ -56,20 +63,21 @@ const TaskBlock = ({ task, view = false }: TaskBlockProps) => {
             <NavLink className={styles.name} to={`/project/${projectId}/details/` + task.id}>
                 {task.title}
             </NavLink>
-            <div className={styles.tags}>
-                <div className={styles.tag}>
-                    #UI007
+            {task.tags.length > 0 &&
+                <div className={styles.tags}>
+                    {task.tags.map(tag => (
+                        <div className={styles.tag} key={tag.id} style={{ color: tag.color, background: tag.background }}>
+                            {tag.label}
+                        </div>
+                    ))}
                 </div>
-                <div className={styles.tag}>
-                    Design
-                </div>
-                <div className={styles.tag}>
-                    Backlog
-                </div>
+            }
+            <div className={styles.deadline} style={deadlineStyle}>
+                {deadline}
             </div>
-            {/* <div>
-                <Participants max={2} participants={task.responsible} id={task.id} type="task" />
-            </div> */}
+            <div>
+                <Participants max={2} participants={task.responsible} id={task.id} type="task" size="small" />
+            </div>
 
         </div>
     );

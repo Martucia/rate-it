@@ -1,6 +1,7 @@
 import { Field } from 'formik';
 
 import styles from './index.module.sass';
+import Error from '../../ui/error/Error';
 
 interface AuthInputProps {
     errors: any,
@@ -14,7 +15,8 @@ const AuthInput = ({ errors, name, touched }: AuthInputProps) => {
             <label className={styles.label} htmlFor={name}>{name.charAt(0).toUpperCase() + name.slice(1)}</label>
             <Field className={styles.input} type={name == "password" ? name : "text"} id={name} name={name} placeholder={name} />
             {errors[name] && touched[name] ? (
-                <div className={styles.error}>{errors[name]}</div>
+                // <div className={styles.error}>{errors[name]}</div>
+                <Error error={errors[name]} />
             ) : null}
         </div>
     );

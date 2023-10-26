@@ -1,12 +1,10 @@
-import { useEffect, useRef } from 'react';
-
-import s from '../index.module.sass';
+import { FC } from 'react'
+import PopupHoc from '../../../hoc/Popup';
 import { useAppDispatch } from '../../../actions/redux';
-import { ClickOutside } from '../../../utils/functions';
 import { deleteComment } from '../../../actions/comments';
 import clipboardCopy from 'clipboard-copy';
 
-interface CommentPopupProps {
+interface PopupProps {
     close: () => void,
     id: number,
     setEdit: () => void,
@@ -14,9 +12,8 @@ interface CommentPopupProps {
     text: string
 }
 
-const CommentPopup = ({ close, id, setEdit, isOwner, text }: CommentPopupProps) => {
-    const popupRef = useRef<HTMLDivElement | null>(null);
-
+const Popup: FC<PopupProps> = ({ close, id, setEdit, isOwner, text }) => {
+    
     const dispatch = useAppDispatch();
 
     const handleDeleteComment = () => {
@@ -25,18 +22,10 @@ const CommentPopup = ({ close, id, setEdit, isOwner, text }: CommentPopupProps) 
 
     const handleCopyText = () => {
         clipboardCopy(text)
-            // .then(() => {
-            //     dispatch(setNotification(`Текст скопійовано в буфер обміну`, true));
-            // })
-            // .catch(err => {
-            //     dispatch(setNotification(`Помилка при копіюванні: ${err}`, false));
-            // });
     }
 
-    useEffect(() => ClickOutside({ element: popupRef, close }))
-
     return (
-        <div ref={popupRef} className={s.popup}>
+        <PopupHoc close={close}>
             {isOwner
                 ? <>
                     <button onClick={setEdit}>
@@ -52,9 +41,8 @@ const CommentPopup = ({ close, id, setEdit, isOwner, text }: CommentPopupProps) 
                     </button>
                 </>
             }
-
-        </div>
+        </PopupHoc>
     );
 }
 
-export default CommentPopup;
+export default Popup;

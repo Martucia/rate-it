@@ -1,18 +1,15 @@
-import { useEffect, useRef } from 'react';
-
-import s from '../index.module.sass';
+import { FC } from 'react'
 import { useAppDispatch } from '../../../actions/redux';
-import { ClickOutside } from '../../../utils/functions';
-import { deleteTask } from '../../../actions/tasks';
+import PopupHoc from '../../../hoc/Popup';
 import { useNavigate } from 'react-router-dom';
+import { deleteTask } from '../../../actions/tasks';
 
-interface CommentPopupProps {
+interface PopupProps {
     close: () => void,
     id: number,
 }
 
-const TaskPopup = ({ close, id }: CommentPopupProps) => {
-    const popupRef = useRef<HTMLDivElement | null>(null);
+const Popup: FC<PopupProps> = ({ close, id }) => {
 
     const dispatch = useAppDispatch();
 
@@ -26,15 +23,13 @@ const TaskPopup = ({ close, id }: CommentPopupProps) => {
         }
     }
 
-    useEffect(() => ClickOutside({ element: popupRef, close }))
-
     return (
-        <div ref={popupRef} className={s.popup}>
+        <PopupHoc close={close}>
             <button onClick={handleDeleteTask}>
                 Delete
             </button>
-        </div>
+        </PopupHoc>
     );
 }
 
-export default TaskPopup;
+export default Popup;

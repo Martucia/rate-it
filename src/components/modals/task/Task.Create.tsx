@@ -1,19 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Input from '../../ui/inputs/input/Input';
-import styles from './FastNewTask.module.sass';
-import { ClickOutside } from '../../utils/functions';
-import { useAppDispatch, useAppSelector } from '../../actions/redux';
-import { createTask } from '../../actions/tasks';
-// import { IStage } from '../../types/stage';
-// import { IProject } from '../../types/project';
+import React, { useState, useEffect, useRef, FC } from 'react';
+import Input from '../../../ui/inputs/input/Input';
+import styles from './Task.Create.module.sass';
+import { ClickOutside } from '../../../utils/functions';
+import { useAppDispatch, useAppSelector } from '../../../actions/redux';
+import { createTask } from '../../../actions/tasks';
 
-interface FastNewTaskProps {
+interface TaskCreateProps {
     close: React.Dispatch<React.SetStateAction<boolean>>,
     stageId: number,
-    // project: IProject
 }
 
-const FastNewTask = ({ close, stageId }: FastNewTaskProps) => {
+const TaskCreate: FC<TaskCreateProps> = ({ close, stageId }) => {
     // const [projectId, setProjectId] = useState<any>(undefined);
     const projectId = useAppSelector(state => state.commonReducer.projectId);
     const [title, setTitle] = useState("");
@@ -54,4 +51,4 @@ const FastNewTask = ({ close, stageId }: FastNewTaskProps) => {
     );
 }
 
-export default FastNewTask;
+export default TaskCreate;

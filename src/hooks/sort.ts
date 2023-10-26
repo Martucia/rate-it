@@ -1,11 +1,7 @@
-export function sortItems(items: any, sortParam: string, filterParam?: string | string[], filterValue?: string | number | null) {
+export function sortItems(items: any, sortParam: string) {
     if (!items) return null;
 
-    const filteredItems = filterParam && filterValue
-        ? items.filter((item: any) => item.project.id === filterValue)
-        : items;
-
-    const sortedItems = [...filteredItems]
+    const sortedItems = [...items]
         .sort((a: any, b: any) => a[sortParam] - b[sortParam]);
 
     return sortedItems;

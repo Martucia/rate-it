@@ -2,7 +2,7 @@ import { useState, FC } from 'react';
 import { IParticipant } from '../../../types/user';
 import x from '@images/x.svg'
 import styles from './TagInput.module.sass'
-import s from '../index.module.sass';
+import Error from '../../error/Error';
 
 interface TagInputProps {
     users: { email: string }[]
@@ -67,9 +67,7 @@ const TagInput: FC<TagInputProps> = ({ users, setUsers, check }) => {
                     onKeyDown={handlePressEnter}
                 />
             </div>
-            <div className={s.error}>
-                {error}
-            </div>
+            <Error error={error} />
         </>
 
     );

@@ -9,6 +9,7 @@ import { IRegUser } from '../../types/user';
 import AuthInput from './AuthInput';
 
 import styles from './index.module.sass';
+import Error from '../../ui/error/Error';
 
 const SignupSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -82,9 +83,7 @@ const Registration = () => {
                                     />
                             )}
 
-                            <div className={styles.error} style={{ fontSize: "16px", marginTop: "20px" }}>
-                                {error}
-                            </div>
+                            <Error error={error} style={{ fontSize: "14px", marginTop: "20px" }} />
 
                             <button className={styles.submit} type="submit">
                                 Registration

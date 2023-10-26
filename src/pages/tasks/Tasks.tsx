@@ -1,19 +1,20 @@
 import { useParams, Outlet } from 'react-router-dom'
 
-import TaskNavigation from '../../components/taskNavigation/TaskNavigation';
+import TaskNavigation from '../../components/navigation/Navigation';
 
 import styles from './Tasks.module.sass';
 import { useAppDispatch, useAppSelector } from '../../actions/redux';
 import { useEffect } from 'react';
 import { getAllTasks } from '../../actions/tasks';
 import { commonSlice } from '../../store/reducers/commonSlice';
+import { IProject } from '../../types/project';
 
 
 const Tasks = () => {
     const dispatch = useAppDispatch();
     const { projectId } = useParams();
 
-    const project = useAppSelector(state => state.projectReducer.projects.find(pr => String(pr.id) === projectId));
+    const project: IProject | undefined = useAppSelector(state => state.projectReducer.projects.find(pr => String(pr.id) === projectId));
 
     useEffect(() => {
         dispatch(commonSlice.actions.toggleParam({ param: "projectId", value: projectId ? Number(projectId) : null }))
@@ -30,7 +31,7 @@ const Tasks = () => {
             <TaskNavigation />
 
             <div className={styles.wrapper}>
-                <Outlet context={project} />
+                <Outlet context={{ project }} />
             </div>
         </div>
     );

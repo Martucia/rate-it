@@ -1,82 +1,58 @@
 import { useState, useRef, useEffect } from 'react';
-import styles from './Title.module.sass';
+import styles from './Navigation.Title.module.sass';
 
 import edit from '@images/ed.svg';
 import { ClickOutside } from '../../utils/functions';
-import { useAppDispatch, useAppSelector } from '../../actions/redux';
+import { useAppDispatch } from '../../actions/redux';
 import { updateProject } from '../../actions/projects';
 
 interface TitleProps {
-    // title: string;
+    title: string,
     isEdited: boolean,
-    projectId: number | null
+    projectId: number
 }
 
-const Title = ({ projectId, isEdited }: TitleProps) => { //  title, 
+const Title = ({ projectId, isEdited, title }: TitleProps) => {
     const [isEdit, setEdit] = useState(false);
-    const [value, setValue] = useState('');
-
-    const title = useAppSelector(state => state.projectReducer.projects.find(project => project.id === projectId)?.name)
+    const [value, setValue] = useState(title);
 
     const inputRef = useRef<HTMLInputElement | null>(null);
     const titleRef = useRef<HTMLDivElement | null>(null);
 
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        if (title) setValue(title);
-    }, [title])
-
     const save = () => {
-
-        if (value.length > 0 && projectId) {
+        if (value.length > 0 && value !== title) {
             dispatch(updateProject({ name: value, id: projectId }));
         } else {
-            if (title) {
-                setValue(title);
-            }
+            setValue(title);
         }
     }
 
-    const handleOnChangle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
-    }
-
-    const handleToggleEdit = () => {
-        if (projectId) {
-            setEdit(!isEdit);
-
-            if (title !== value && isEdit) {
-                save();
-            }
-        }
     }
 
     useEffect(() => {
         if (isEdit && inputRef.current) {
             inputRef.current.focus();
+        } else {
+            save();
         }
     }, [isEdit])
 
 
-    const closeEdit = (val: boolean) => {
-        save();
-
+    const toggleEdit = (val: boolean) => {
         setEdit(val);
     }
 
     const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-
         if (event.key === "Enter") {
-            if (title !== value) {
-                save();
-            }
-
             setEdit(false);
         }
     }
 
-    useEffect(() => ClickOutside({ element: titleRef, close: closeEdit }), []);
+    useEffect(() => ClickOutside({ element: titleRef, close: toggleEdit }), []);
 
     if (!projectId) {
         return (
@@ -93,16 +69,16 @@ const Title = ({ projectId, isEdited }: TitleProps) => { //  title,
                     ref={inputRef}
                     value={value}
                     className={styles.input}
-                    onChange={handleOnChangle}
+                    onChange={handleOnChange}
                     onKeyDown={handleEnterPress}
                 />
-                : <span onDoubleClick={handleToggleEdit}>
+                : <span onDoubleClick={() => setEdit(true)}>
                     {value}
                 </span>
             }
 
-            {isEdited && projectId
-                && <button onClick={handleToggleEdit}>
+            {isEdited
+                && <button onClick={() => setEdit(true)}>
                     <img src={edit} alt="edit" />
                 </button>}
         </h3>

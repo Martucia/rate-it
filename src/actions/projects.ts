@@ -5,7 +5,6 @@ import { AppDispatch } from '../store/store';
 import { projectsSlice } from '../store/reducers/projectsSlice';
 import { getConfig } from '../utils/functions';
 import { commonSlice } from '../store/reducers/commonSlice';
-import { IParticipant } from '../types/user';
 
 export const getAllProjects = () => async (dispatch: AppDispatch) => {
     try {
@@ -69,6 +68,21 @@ export const updateProject = (project: IProjectUpdate) => async (dispatch: AppDi
         const response = await axios.patch<IProject>(`${BASE_URL}/projects/${project.id}`, project, getConfig());
 
         dispatch(projectsSlice.actions.updateProject(response.data));
+    } catch (e: any) {
+        console.log(e)
+        dispatch(projectsSlice.actions.projectFetchingError(e.response.data.message || e.message));
+    }
+}
+
+export const deleteProject = (id: number) => async (dispatch: AppDispatch) => {
+    try {
+        dispatch(projectsSlice.actions.projectFetching());
+
+        const response = await axios.delete<IProject>(`${BASE_URL}/projects/${id}`, getConfig());
+
+        console.log(response.data)
+
+        dispatch(projectsSlice.actions.removeProject(id));
     } catch (e: any) {
         console.log(e)
         dispatch(projectsSlice.actions.projectFetchingError(e.response.data.message || e.message));

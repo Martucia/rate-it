@@ -8,8 +8,10 @@ import { createComment, updateComment } from '../../../actions/comments';
 import FileBtn from '../../../ui/fileBtn/FileBtn';
 import FilesList from '../../filesList/FilesList';
 import { IComment, ICommentCreate } from '../../../types/comment';
-import EmojiPopup from '../../popups/emojiPopup/EmojiPopup';
+// import EmojiPopup from '../../popups/emojiPopup/EmojiPopup';
+import Emoji from '../../../ui/emoji/Emoji';
 import { EmojiClickData } from 'emoji-picker-react';
+import Error from '../../../ui/error/Error';
 
 interface CommentInput {
     taskId?: number,
@@ -183,10 +185,8 @@ const CommentInput: FC<CommentInput> = ({ taskId, comment = null, closeEditing, 
                                 <button onClick={() => setEmojiOpen(!isEmojiOpen)} className={styles.btn}>
                                     <img src={emoji} alt="" />
                                 </button>
-                                <div className={styles.error}>
-                                    {error}
-                                </div>
-                                {isEmojiOpen && <EmojiPopup
+                                <Error error={error} />
+                                {isEmojiOpen && <Emoji
                                     close={() => setEmojiOpen(false)}
                                     changeValue={(emoji: EmojiClickData) =>
                                         setValue(prev => prev + emoji)

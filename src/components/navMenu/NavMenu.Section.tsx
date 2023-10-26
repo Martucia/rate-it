@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, FC } from 'react';
 
 import styles from './NavMenu.module.sass';
 
@@ -7,9 +6,14 @@ import toggle from '@images/arrow.svg';
 import plus from '@images/add_circle.svg'
 import { useAppDispatch } from '../../actions/redux';
 import { commonSlice } from '../../store/reducers/commonSlice';
+import Link from './NavMenu.Link';
 
+interface NavMenuSectionProps {
+    section: any,
+    type?: 'projects'
+}
 
-const NavMenuSection = ({ section }: any) => {
+const NavMenuSection: FC<NavMenuSectionProps> = ({ section, type }) => {
     const [isOpen, setOpen] = useState(true);
 
     const dispatch = useAppDispatch();
@@ -33,20 +37,7 @@ const NavMenuSection = ({ section }: any) => {
             </div>
             <div className={`${styles.wrapper} ${!isOpen && styles.section_close}`}>
                 {section.links.map((link: any) => (
-                    <NavLink key={link.name} className={({ isActive }) => isActive ? `${styles.active} ${styles.link}` : styles.link} to={link.link}>
-                        <div className={styles.link_context}>
-                            <img src={link.image} alt="" />
-                            <span className={styles.text}>
-                                {link.name}
-                            </span>
-                        </div>
-                        {link.count && link.count > 0
-                            && <div className={styles.count}>
-                                {link.count}
-                            </div>
-                        }
-                        <div className={styles.border}></div>
-                    </NavLink>
+                    <Link key={link.id} link={link} type={type} />
                 ))}
 
                 {section.name.toLowerCase() == "projects" && (

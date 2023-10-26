@@ -13,7 +13,7 @@ import attach from '@images/add_attach.svg';
 import add_child from '@images/add_child.svg';
 import Comments from '../../comments/Comments';
 import { BASE_URL } from '../../../utils/constants';
-import TaskDetails from './taskDetails/TaskDetails';
+import TaskDetails from './Task.Details';
 import Title from './ui/title/Title';
 import Description from './ui/desctiption/Description';
 

@@ -8,6 +8,7 @@ export default defineConfig({
       '@styles': '/src/styles',
       '@variables': '/src/styles/variables.sass',
       '@images': '/src/assets',
+      '@hoc': '/src/hoc'
     },
   }
 });

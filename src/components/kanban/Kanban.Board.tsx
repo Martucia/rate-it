@@ -8,7 +8,7 @@ import { createStage } from '../../actions/stages';
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
-import TaskBlock from '../taskBlock/TaskBlock';
+import TaskBlock from '../modals/task/Task.Block';
 import { ITask } from '../../types/task';
 import { commonSlice } from '../../store/reducers/commonSlice';
 import { Outlet } from 'react-router-dom';

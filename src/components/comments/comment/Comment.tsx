@@ -4,12 +4,12 @@ import { BASE_URL } from '../../../utils/constants';
 import { useFormattedDate, zoomPage } from '../../../utils/functions';
 import { IComment } from '../../../types/comment';
 
-import CommentPopup from '../../popups/commentPopup/CommentPopup';
 import Input from './Comment.Input';
 
 import { useAppDispatch, useAppSelector } from '../../../actions/redux';
 
 import styles from './Comment.module.sass';
+import Popup from './Comment.Popup';
 
 interface CommentProps {
     comment: IComment,
@@ -94,7 +94,7 @@ const Comment: FC<CommentProps> = ({ comment, isEditing, setEditing }) => {
                     <span></span>
                     <span></span>
                 </button>
-                {isPopupOpen && <CommentPopup
+                {isPopupOpen && <Popup
                     close={() => setPopupOpen(false)}
                     id={comment.id}
                     isOwner={user?.id === comment.user.id}

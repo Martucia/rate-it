@@ -1,11 +1,11 @@
 export class MailDto {
-    to: string
+    // to: string
 
-    subject: string
+    // subject: string
 
-    template?: string
+    // template?: string
 
-    text: string
+    // text: string
     
-    from: string
+    // from: string
 }

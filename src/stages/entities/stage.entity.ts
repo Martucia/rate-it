@@ -19,7 +19,7 @@ export class Stage {
     @Column()
     index: number
 
-    @ManyToOne(() => Project, (project) => project.stages)
+    @ManyToOne(() => Project, (project) => project.stages, { onDelete: 'CASCADE' })
     project: Project
 
     @OneToMany(() => Task, (task) => task.stage, { onDelete: 'CASCADE' })

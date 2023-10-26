@@ -19,7 +19,7 @@ export class Tag {
     @ManyToOne(() => Project, (project) => project.tags)
     project: Project
 
-    @ManyToMany(() => Task, (task) => task.tags)
+    @ManyToMany(() => Task, (task) => task.tags, { onDelete: 'SET NULL' })
     @JoinTable()
     tasks: Task[]
 }

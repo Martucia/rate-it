@@ -17,7 +17,7 @@ export class Comment {
     @JoinColumn()
     user: User
 
-    @ManyToOne(() => Task, (stage) => stage.comments, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Task, (stage) => stage.comments, { onDelete: 'NO ACTION' })
     task: Task
 
     @Column('text', { array: true, default: [] })

@@ -97,6 +97,7 @@ export class StagesService {
         message: "Stage was successfully removed"
       };
     } catch (error) {
+      console.log(error)
       throw new InternalServerErrorException("Error while removing the stage");
     }
   }

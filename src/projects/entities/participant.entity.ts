@@ -11,7 +11,7 @@ export class Participant {
     @JoinColumn()
     user: User
 
-    @ManyToOne(() => Project, (project) => project.participants)
+    @ManyToOne(() => Project, (project) => project.participants, { onDelete: 'CASCADE' })
     project: Project
 
     @Column()

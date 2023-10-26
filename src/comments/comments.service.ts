@@ -24,8 +24,6 @@ export class CommentsService {
 
     const data = JSON.parse(dto.comment);
 
-    // const data = dto.comment;
-
     const commentToSave = this.commentsRepository.create({
       text: data.text,
       user: {

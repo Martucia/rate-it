@@ -28,10 +28,10 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date
 
-    @OneToMany(() => Participant, (participant) => participant.user)
+    @OneToMany(() => Participant, (participant) => participant.user, { onDelete: 'CASCADE' })
     participants: Participant[]
 
-    @ManyToMany(() => Task, (task) => task.responsible)
+    @ManyToMany(() => Task, (task) => task.responsible, { onDelete: 'NO ACTION' })
     @JoinTable()
     tasks: Task[]
 }

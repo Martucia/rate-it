@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
@@ -76,45 +76,48 @@ export class ProjectsService {
   }
 
   async invite(projectId: number, participants: { email: string }[]) {
-    const project = await this.projectsRepository.findOne({
-      where: { id: projectId },
-      relations: {
-        participants: {
-          user: true
-        }
-      }
-    })
 
-    if (!project) {
-      throw new NotFoundException("No project with this id was found");
-    }
+    const result = await this.mailService.sendMail('imarta.shlapak@gmail.com', 'lol', 'lol chipuha')
 
-    // const result = await this.mailService.sendMail({
-    //   to: "shlapak.marta@gmail.com",
-    //   subject: "Testing Nest MailerModule ✔",
-    //   text: "Helouka",
-    //   from: "imarta.shlapak@gmail.com"
+    // const project = await this.projectsRepository.findOne({
+    //   where: { id: projectId },
+    //   relations: {
+    //     participants: {
+    //       user: true
+    //     }
+    //   }
     // })
 
+    // if (!project) {
+    //   throw new NotFoundException("No project with this id was found");
+    // }
 
-    const existingEmails = project.participants.map(participant => participant.user.email);
-    const newEmails = participants.filter(participant => !existingEmails.includes(participant.email));
+    // // const result = await this.mailService.sendMail({
+    // //   to: "shlapak.marta@gmail.com",
+    // //   subject: "Testing Nest MailerModule ✔",
+    // //   text: "Helouka",
+    // //   from: "imarta.shlapak@gmail.com"
+    // // })
 
-    if (newEmails.length === 0) return {
-      message: "There is no one to invite"
-    };
 
-    const invitations = await Promise.all(newEmails.map(async (participant) => {
-      const token = inviteGenerate();
-      const invitation = await this.invitationsRepository.save({
-        project: { id: projectId },
-        email: participant.email,
-        token
-      });
-      return invitation;
-    }));
+    // const existingEmails = project.participants.map(participant => participant.user.email);
+    // const newEmails = participants.filter(participant => !existingEmails.includes(participant.email));
 
-    console.log("invitations", invitations)
+    // if (newEmails.length === 0) return {
+    //   message: "There is no one to invite"
+    // };
+
+    // const invitations = await Promise.all(newEmails.map(async (participant) => {
+    //   const token = inviteGenerate();
+    //   const invitation = await this.invitationsRepository.save({
+    //     project: { id: projectId },
+    //     email: participant.email,
+    //     token
+    //   });
+    //   return invitation;
+    // }));
+
+    // console.log("invitations", invitations)
 
     return {
       message: "invitations sent successfully"
@@ -147,8 +150,15 @@ export class ProjectsService {
       throw new NotFoundException("No project with this id was found");
     }
 
-    return {
-      message: "Project was successfully removed"
-    };
+    try {
+      await this.projectsRepository.remove(project);
+
+      return {
+        message: "Project was successfully removed"
+      };
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerErrorException("Error while removing the stage");
+    }
   }
 }

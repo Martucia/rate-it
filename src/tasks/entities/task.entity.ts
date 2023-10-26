@@ -37,17 +37,17 @@ export class Task {
     @JoinColumn()
     reporter: User
 
-    @ManyToOne(() => Project, (project) => project.id)
+    @ManyToOne(() => Project, (project) => project.id, { onDelete: 'NO ACTION' })
     @JoinColumn({ name: 'project' })
     project: Project;
 
-    @ManyToOne(() => Stage, (stage) => stage.tasks)
+    @ManyToOne(() => Stage, (stage) => stage.tasks, { onDelete: 'CASCADE' })
     stage: Stage
 
     @OneToMany(() => Comment, (comment) => comment.task, { onDelete: 'CASCADE' })
     comments: Comment[]
 
-    @OneToMany(() => Task, (task) => task.parentTask)
+    @OneToMany(() => Task, (task) => task.parentTask, { onDelete: 'CASCADE' })
     childTasks: Task[]
 
     @ManyToOne(() => Task, (task) => task.childTasks)

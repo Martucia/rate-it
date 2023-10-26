@@ -103,7 +103,8 @@ export class TasksService {
         stage: true,
         childTasks: true,
         parentTask: true,
-        tags: true
+        tags: true,
+        project: true
       },
     });
 
